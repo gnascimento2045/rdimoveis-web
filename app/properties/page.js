@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -9,7 +9,7 @@ import PropertyCard from '@/components/PropertyCard'
 import { propertyService } from '@/services/api'
 import { motion } from 'framer-motion'
 
-export default function PropertiesPage() {
+function PropertiesContent() {
   const searchParams = useSearchParams()
   const [properties, setProperties] = useState([])
   const [loading, setLoading] = useState(true)
@@ -55,10 +55,7 @@ export default function PropertiesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <WhatsAppButton />
-
+    <>
       <div className="bg-rd-blue text-white py-16">
         <div className="container mx-auto px-4">
           <motion.h1
@@ -142,6 +139,23 @@ export default function PropertiesPage() {
           </>
         )}
       </div>
+    </>
+  )
+}
+
+export default function PropertiesPage() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+      <WhatsAppButton />
+      
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      }>
+        <PropertiesContent />
+      </Suspense>
 
       <Footer />
     </div>
