@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
@@ -15,11 +14,6 @@ import { formatPrice, getWhatsAppLink } from '@/lib/utils'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-
-const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false })
-const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false })
-const Marker = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false })
-const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false })
 
 export default function PropertyDetailPage() {
   const params = useParams()
@@ -66,10 +60,6 @@ export default function PropertyDetailPage() {
   const images = property.images?.length > 0
     ? property.images
     : ['https://images.unsplash.com/photo-1757439402214-2311405d70bd?crop=entropy&cs=srgb&fm=jpg&q=85']
-
-  const position = property.latitude && property.longitude
-    ? [property.latitude, property.longitude]
-    : [-15.7942, -47.8822]
 
   return (
     <div className="min-h-screen bg-white">
@@ -141,23 +131,6 @@ export default function PropertyDetailPage() {
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Descrição</h2>
               <p className="text-gray-700 leading-relaxed text-lg">{property.description}</p>
-            </div>
-
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Localização</h2>
-              <div className="h-96 rounded-xl overflow-hidden shadow-lg">
-                {typeof window !== 'undefined' && (
-                  <MapContainer center={position} zoom={15} style={{ height: '100%', width: '100%' }}>
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                    />
-                    <Marker position={position}>
-                      <Popup>{property.title}</Popup>
-                    </Marker>
-                  </MapContainer>
-                )}
-              </div>
             </div>
           </div>
 
