@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Home, Building2, Phone } from 'lucide-react'
+import { Phone } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function Navbar() {
@@ -28,15 +28,27 @@ export default function Navbar() {
             </div>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="flex items-center space-x-2 text-gray-700 hover:text-rd-blue transition-colors">
-              <Home className="h-5 w-5" />
-              <span className="font-medium">Início</span>
+          <div className="hidden md:flex items-center space-x-6">
+            <Link href="/properties?purpose=comprar" className="text-gray-700 hover:text-rd-blue transition-colors font-medium">
+              COMPRAR
             </Link>
-            <Link href="/properties" className="flex items-center space-x-2 text-gray-700 hover:text-rd-blue transition-colors">
-              <Building2 className="h-5 w-5" />
-              <span className="font-medium">Imóveis</span>
+            <Link href="/properties?purpose=alugar" className="text-gray-700 hover:text-rd-blue transition-colors font-medium">
+              ALUGUEL
             </Link>
+            <Link href="/properties?purpose=lancamentos" className="text-gray-700 hover:text-rd-blue transition-colors font-medium">
+              LANÇAMENTOS
+            </Link>
+            <Link href="/emprestimos" className="text-gray-700 hover:text-rd-blue transition-colors font-medium">
+              EMPRESTIMOS SIAPE & INSS
+            </Link>
+            <a
+              href="https://wa.me/5561993336757?text=Oi,%20quero%20simular%20o%20valor%20do%20meu%20imovel!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-700 hover:text-rd-blue transition-colors font-medium"
+            >
+              SAIBA O VALOR DO SEU IMÓVEL
+            </a>
             <a
               href="https://wa.me/5561993336757"
               target="_blank"
