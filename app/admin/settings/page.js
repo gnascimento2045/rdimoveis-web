@@ -5,7 +5,9 @@ import { Settings, Save } from 'lucide-react'
 
 export default function AdminSettings() {
   const [heroImage, setHeroImage] = useState('')
-  const [saving, setSaving] = useState(false)
+  const [secondaryImage, setSecondaryImage] = useState('')
+  const [savingHero, setSavingHero] = useState(false)
+  const [savingSecondary, setSavingSecondary] = useState(false)
 
   const handleSaveHeroImage = async () => {
     if (!heroImage) {
@@ -13,7 +15,7 @@ export default function AdminSettings() {
       return
     }
 
-    setSaving(true)
+    setSavingHero(true)
     try {
       const token = localStorage.getItem('admin_token')
       await fetch('http://localhost:8000/api/settings/hero-image', {
@@ -85,11 +87,11 @@ export default function AdminSettings() {
 
           <button
             onClick={handleSaveHeroImage}
-            disabled={saving}
+            disabled={savingHero}
             className="w-full bg-rd-blue hover:bg-rd-blue-hover text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center space-x-2 disabled:opacity-50"
           >
             <Save className="w-5 h-5" />
-            <span>{saving ? 'Salvando...' : 'Salvar Alterações'}</span>
+            <span>{savingHero ? 'Salvando...' : 'Salvar Alterações'}</span>
           </button>
         </div>
       </div>

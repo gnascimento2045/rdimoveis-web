@@ -15,10 +15,26 @@ export default function Home() {
   const [filteredProperties, setFilteredProperties] = useState([])
   const [selectedType, setSelectedType] = useState('comprar')
   const [loading, setLoading] = useState(true)
+  const [heroImageUrl, setHeroImageUrl] = useState('https://images.unsplash.com/photo-1625426242633-3be4b3379dfb?crop=entropy&cs=srgb&fm=jpg&q=85')
 
   useEffect(() => {
     loadProperties()
+    loadHeroImage()
   }, [])
+
+  const loadHeroImage = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/settings/hero-image')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.url) {
+          setHeroImageUrl(data.url)
+        }
+      }
+    } catch (error) {
+      console.error('Error loading hero image:', error)
+    }
+  }
 
   useEffect(() => {
     filterProperties(selectedType)
@@ -66,7 +82,7 @@ export default function Home() {
       <Navbar />
       <WhatsAppButton />
 
-      <section className="relative pt-20 pb-32 flex items-center justify-center bg-cover bg-center" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1625426242633-3be4b3379dfb?crop=entropy&cs=srgb&fm=jpg&q=85)'}}>
+      <section className="relative pt-20 pb-32 flex items-center justify-center bg-cover bg-center" style={{backgroundImage: `url(${heroImageUrl})`}}>
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative z-10 container mx-auto px-4 text-center">
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl">
