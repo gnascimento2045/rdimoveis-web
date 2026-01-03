@@ -29,31 +29,67 @@ export default function Emprestimos() {
       <WhatsAppButton />
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 flex items-center justify-center bg-gradient-to-r from-rd-blue to-blue-700">
-        <div className="relative z-10 container mx-auto px-4 text-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-bold text-white mb-6"
-          >
-            EMPRÉSTIMOS CONSIGNADOS
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-2xl text-white mb-8"
-          >
-            SIAPE & INSS
-          </motion.p>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-xl text-blue-100 max-w-3xl mx-auto"
-          >
-            Soluções financeiras com as melhores taxas para servidores públicos federais e aposentados do INSS
-          </motion.p>
+      <section className="relative pt-32 pb-24 flex items-center justify-center bg-gradient-to-r from-slate-900 via-rd-blue to-blue-700">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?crop=entropy&cs=srgb&fm=jpg&q=85)', backgroundSize: 'cover'}}></div>
+        </div>
+        <div className="relative z-10 container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-white"
+            >
+              <p className="text-sm font-bold text-blue-200 mb-4 uppercase tracking-wider">SOLUÇÕES FINANCEIRAS</p>
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                EMPRÉSTIMOS<br/>CONSIGNADOS
+              </h1>
+              <p className="text-xl text-blue-100 mb-8 leading-relaxed">
+                Taxas reduzidas e processo rápido para servidores públicos federais e aposentados do INSS
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a
+                  href="https://wa.me/5561993336757"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-white text-rd-blue hover:bg-gray-100 rounded-lg px-8 py-4 text-lg font-bold shadow-xl transition-colors text-center"
+                >
+                  FALAR COM ESPECIALISTA
+                </a>
+                <a
+                  href="#operacoes"
+                  className="inline-block border-2 border-white text-white hover:bg-white/10 rounded-lg px-8 py-4 text-lg font-bold transition-colors text-center"
+                >
+                  SAIBA MAIS
+                </a>
+              </div>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20">
+                <p className="text-4xl font-bold text-white mb-2">+15 anos</p>
+                <p className="text-blue-100">De experiência no mercado</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20">
+                <p className="text-4xl font-bold text-white mb-2">Taxas baixas</p>
+                <p className="text-blue-100">A partir de 1,5% a.m.</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20">
+                <p className="text-4xl font-bold text-white mb-2">Aprovação rápida</p>
+                <p className="text-blue-100">Em até 48 horas úteis</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20">
+                <p className="text-4xl font-bold text-white mb-2">100% Seguro</p>
+                <p className="text-blue-100">Desconto automático em folha</p>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -97,11 +133,16 @@ export default function Emprestimos() {
       </section>
 
       {/* Grid de Operações */}
-      <section className="py-24 bg-white">
+      <section id="operacoes" className="py-24 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-16 text-center">
-            Nossas Operações
-          </h2>
+          <div className="mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center">
+              Nossas Operações
+            </h2>
+            <p className="text-xl text-gray-600 text-center max-w-2xl mx-auto">
+              Conheça as modalidades de empréstimo consignado que oferecemos
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {operations.map((op, index) => (
               <motion.div

@@ -101,12 +101,14 @@ export default async function Home() {
       {/* Bairros em Destaque */}
       <section className="py-24 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-16 text-center">
-            Bairros em Destaque
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Link href="/properties?city=Águas%20Claras" className="group cursor-pointer">
-              <div className="relative h-64 mb-4 rounded-lg overflow-hidden">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Bairros em Destaque
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <Link href="/properties?city=Águas%20Claras" className="group cursor-pointer text-center">
+              <div className="relative h-64 mb-6 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://images.unsplash.com/photo-1486325212027-8081e485255e?crop=entropy&cs=srgb&fm=jpg&q=85"
                   alt="Águas Claras"
@@ -114,11 +116,12 @@ export default async function Home() {
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 text-center">Águas Claras | Brasília</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Águas Claras</h3>
+              <p className="text-gray-600">Águas Claras | Brasília</p>
             </Link>
 
-            <Link href="/properties?city=Asa%20Sul" className="group cursor-pointer">
-              <div className="relative h-64 mb-4 rounded-lg overflow-hidden">
+            <Link href="/properties?city=Asa%20Sul" className="group cursor-pointer text-center">
+              <div className="relative h-64 mb-6 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://images.unsplash.com/photo-1449844908441-8829872d2607?crop=entropy&cs=srgb&fm=jpg&q=85"
                   alt="Asa Sul"
@@ -126,11 +129,12 @@ export default async function Home() {
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 text-center">Asa Sul | Brasília</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Asa Sul</h3>
+              <p className="text-gray-600">Asa Sul | Brasília</p>
             </Link>
 
-            <Link href="/properties?city=Asa%20Norte" className="group cursor-pointer">
-              <div className="relative h-64 mb-4 rounded-lg overflow-hidden">
+            <Link href="/properties?city=Asa%20Norte" className="group cursor-pointer text-center">
+              <div className="relative h-64 mb-6 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?crop=entropy&cs=srgb&fm=jpg&q=85"
                   alt="Asa Norte"
@@ -138,11 +142,12 @@ export default async function Home() {
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 text-center">Asa Norte | Brasília</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Asa Norte</h3>
+              <p className="text-gray-600">Asa Norte | Brasília</p>
             </Link>
 
-            <Link href="/properties?city=Taguatinga" className="group cursor-pointer">
-              <div className="relative h-64 mb-4 rounded-lg overflow-hidden">
+            <Link href="/properties?city=Taguatinga" className="group cursor-pointer text-center">
+              <div className="relative h-64 mb-6 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://images.unsplash.com/photo-1514432324607-2df1e051f537?crop=entropy&cs=srgb&fm=jpg&q=85"
                   alt="Taguatinga"
@@ -150,11 +155,12 @@ export default async function Home() {
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 text-center">Taguatinga | Brasília</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Taguatinga</h3>
+              <p className="text-gray-600">Taguatinga | Brasília</p>
             </Link>
 
-            <Link href="/properties?city=Sudoeste" className="group cursor-pointer">
-              <div className="relative h-64 mb-4 rounded-lg overflow-hidden">
+            <Link href="/properties?city=Sudoeste" className="group cursor-pointer text-center">
+              <div className="relative h-64 mb-6 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://images.unsplash.com/photo-1494783367193-149034c05e41?crop=entropy&cs=srgb&fm=jpg&q=85"
                   alt="Sudoeste"
@@ -162,11 +168,12 @@ export default async function Home() {
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 text-center">Sudoeste | Brasília</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Sudoeste</h3>
+              <p className="text-gray-600">Sudoeste | Brasília</p>
             </Link>
 
-            <Link href="/properties?city=Noroeste" className="group cursor-pointer">
-              <div className="relative h-64 mb-4 rounded-lg overflow-hidden">
+            <Link href="/properties?city=Noroeste" className="group cursor-pointer text-center">
+              <div className="relative h-64 mb-6 rounded-lg overflow-hidden shadow-lg">
                 <Image
                   src="https://images.unsplash.com/photo-1512207736139-e1b3a81b4cf2?crop=entropy&cs=srgb&fm=jpg&q=85"
                   alt="Noroeste"
@@ -174,7 +181,8 @@ export default async function Home() {
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 text-center">Noroeste | Brasília</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Noroeste</h3>
+              <p className="text-gray-600">Noroeste | Brasília</p>
             </Link>
           </div>
         </div>
