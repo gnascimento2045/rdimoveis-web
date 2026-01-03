@@ -10,7 +10,7 @@ import { MapPin, Bed, Bath, Square, MessageCircle } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import { propertyService } from '@/services/api'
-import { formatPrice, getWhatsAppLink } from '@/lib/utils'
+import { formatPrice, getWhatsAppLink, getFinalidadeBadge, getCondicaoBadge } from '@/lib/utils'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
@@ -93,10 +93,10 @@ export default function PropertyDetailPage() {
 
             <div className="mb-4 flex gap-2">
               <span className="bg-rd-blue text-white font-semibold px-4 py-2 rounded-lg">
-                {property.type === 'comprar' ? 'COMPRAR' : 'ALUGAR'}
+                {getFinalidadeBadge(property.finalidade || property.type)}
               </span>
               <span className="bg-white border-2 border-gray-300 text-gray-800 font-semibold px-4 py-2 rounded-lg">
-                {property.status === 'na_planta' ? 'NA PLANTA' : 'PRONTO'}
+                {getCondicaoBadge(property.condicao || property.status)}
               </span>
             </div>
 
@@ -138,7 +138,7 @@ export default function PropertyDetailPage() {
             <div className="sticky top-24 bg-white shadow-2xl rounded-xl p-8">
               <div className="mb-6">
                 <p className="text-4xl font-bold text-rd-blue mb-2">{formatPrice(property.price)}</p>
-                {property.type === 'alugar' && <p className="text-gray-600">por mês</p>}
+                {(property.finalidade === 'aluguel' || property.type === 'alugar') && <p className="text-gray-600">por mês</p>}
               </div>
 
               <a

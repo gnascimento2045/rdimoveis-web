@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin, Bed, Bath, Square, ChevronLeft, ChevronRight } from 'lucide-react'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, getFinalidadeBadge, getCondicaoBadge } from '@/lib/utils'
 import { motion } from 'framer-motion'
 
 export default function PropertyCard({ property, index = 0 }) {
@@ -66,10 +66,10 @@ export default function PropertyCard({ property, index = 0 }) {
             )}
             <div className="absolute top-4 left-4 flex gap-2">
               <span className="bg-rd-blue text-white font-semibold px-3 py-1 rounded-md text-sm">
-                {property.type === 'comprar' ? 'COMPRAR' : 'ALUGAR'}
+                {getFinalidadeBadge(property.finalidade || property.type)}
               </span>
               <span className="bg-white text-gray-800 font-semibold px-3 py-1 rounded-md text-sm">
-                {property.status === 'na_planta' ? 'NA PLANTA' : 'PRONTO'}
+                {getCondicaoBadge(property.condicao || property.status)}
               </span>
             </div>
           </div>
@@ -108,7 +108,7 @@ export default function PropertyCard({ property, index = 0 }) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-rd-blue">{formatPrice(property.price)}</p>
-                {property.type === 'alugar' && <p className="text-xs text-gray-500">por mês</p>}
+                {(property.finalidade === 'aluguel' || property.type === 'alugar') && <p className="text-xs text-gray-500">por mês</p>}
               </div>
               <span className="bg-rd-blue hover:bg-rd-blue-hover text-white rounded-full px-6 py-2 font-semibold transition-colors">
                 Ver Detalhes

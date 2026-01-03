@@ -15,10 +15,10 @@ export default function Navbar() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-3">
-            <Image 
-              src="/assets/logo.png" 
-              alt="RD Imóveis DF Logo" 
-              width={60} 
+            <Image
+              src="/assets/logo.png"
+              alt="RD Imóveis DF Logo"
+              width={60}
               height={60}
               className="h-16 w-16 object-contain"
             />
@@ -29,17 +29,8 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/properties?purpose=comprar" className="text-gray-700 hover:text-rd-blue transition-colors font-medium">
-              COMPRAR
-            </Link>
-            <Link href="/properties?purpose=alugar" className="text-gray-700 hover:text-rd-blue transition-colors font-medium">
-              ALUGUEL
-            </Link>
-            <Link href="/properties?purpose=lancamentos" className="text-gray-700 hover:text-rd-blue transition-colors font-medium">
-              LANÇAMENTOS
-            </Link>
             <Link href="/emprestimos" className="text-gray-700 hover:text-rd-blue transition-colors font-medium">
-              EMPRESTIMOS SIAPE & INSS
+              EMPRESTIMOS SIAPE OU INSS
             </Link>
             <a
               href="https://wa.me/5561993336757?text=Oi,%20quero%20simular%20o%20valor%20do%20meu%20imovel!"
@@ -47,7 +38,7 @@ export default function Navbar() {
               rel="noopener noreferrer"
               className="text-gray-700 hover:text-rd-blue transition-colors font-medium"
             >
-              SAIBA O VALOR DO SEU IMÓVEL
+              AVALIE E VENDA SEU IMÓVEL
             </a>
             <a
               href="https://wa.me/5561993336757"

@@ -84,9 +84,31 @@ export const propertyService = {
     const formData = new FormData()
     formData.append('file', file)
     const response = await axios.post(
-      `${API}/properties/${propertyId}/images`,
+      `${API}/properties/${propertyId}/media`,
       formData,
       { headers: { ...authHeader(), 'Content-Type': 'multipart/form-data' } }
+    )
+    return response.data
+  },
+
+  async getPropertyMedia(propertyId) {
+    const response = await axios.get(`${API}/properties/${propertyId}/media`)
+    return response.data
+  },
+
+  async deleteMedia(propertyId, mediaId) {
+    const response = await axios.delete(
+      `${API}/properties/${propertyId}/media/${mediaId}`,
+      { headers: authHeader() }
+    )
+    return response.data
+  },
+
+  async updateMediaOrder(propertyId, mediaId, displayOrder) {
+    const response = await axios.put(
+      `${API}/properties/${propertyId}/media/${mediaId}/order`,
+      { display_order: displayOrder },
+      { headers: authHeader() }
     )
     return response.data
   },
