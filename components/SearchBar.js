@@ -10,34 +10,43 @@ export default function SearchBar() {
   const router = useRouter()
   const [purpose, setPurpose] = useState('comprar')
   const [propertyType, setPropertyType] = useState('0')
-  const [city, setCity] = useState('')
+  const [location, setLocation] = useState('')
+  const [locationType, setLocationType] = useState('') // 'city' or 'neighborhood'
   const [rooms, setRooms] = useState('0')
   const [minPrice, setMinPrice] = useState('')
   const [maxPrice, setMaxPrice] = useState('')
   const [suggestions, setSuggestions] = useState([])
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [allCities, setAllCities] = useState([])
+  const [allLocations, setAllLocations] = useState([])
   const inputRef = useRef(null)
 
   useEffect(() => {
-    loadCities()
+    loadLocations()
   }, [])
 
-  const loadCities = async () => {
+  const loadLocations = async () => {
     try {
       const properties = await propertyService.getProperties({ active: true })
-      const uniqueCities = [...new Set(properties.map(p => p.city))]
-      setAllCities(uniqueCities)
+      const uniqueCities = [...new Set(properties.map(p => p.city).filter(Boolean))]
+      const uniqueNeighborhoods = [...new Set(properties.map(p => p.neighborhood).filter(Boolean))]
+
+      const locations = [
+        ...uniqueCities.map(city => ({ name: city, type: 'city' })),
+        ...uniqueNeighborhoods.map(neighborhood => ({ name: neighborhood, type: 'neighborhood' }))
+      ]
+
+      setAllLocations(locations)
     } catch (error) {
-      console.error('Error loading cities:', error)
+      console.error('Error loading locations:', error)
     }
   }
 
-  const handleCityChange = (value) => {
-    setCity(value)
+  const handleLocationChange = (value) => {
+    setLocation(value)
+    setLocationType('') // Reset type when user types
     if (value.length > 0) {
-      const filtered = allCities.filter(c => 
-        c.toLowerCase().includes(value.toLowerCase())
+      const filtered = allLocations.filter(loc =>
+        loc.name.toLowerCase().includes(value.toLowerCase())
       )
       setSuggestions(filtered)
       setShowSuggestions(true)
@@ -47,8 +56,9 @@ export default function SearchBar() {
     }
   }
 
-  const handleSuggestionClick = (selectedCity) => {
-    setCity(selectedCity)
+  const handleSuggestionClick = (selectedLocation) => {
+    setLocation(selectedLocation.name)
+    setLocationType(selectedLocation.type)
     setShowSuggestions(false)
   }
 
@@ -56,7 +66,16 @@ export default function SearchBar() {
     const params = new URLSearchParams()
     if (purpose) params.append('purpose', purpose)
     if (propertyType !== '0') params.append('type', propertyType)
-    if (city) params.append('city', city)
+    if (location) {
+      if (locationType === 'city') {
+        params.append('city', location)
+      } else if (locationType === 'neighborhood') {
+        params.append('neighborhood', location)
+      } else {
+        params.append('city', location)
+        params.append('neighborhood', location)
+      }
+    }
     if (rooms !== '0') params.append('rooms', rooms)
     if (minPrice) params.append('minPrice', minPrice)
     if (maxPrice) params.append('maxPrice', maxPrice)
@@ -142,8 +161,8 @@ export default function SearchBar() {
               <input
                 type="text"
                 placeholder="Bairro ou Cidade"
-                value={city}
-                onChange={(e) => handleCityChange(e.target.value)}
+                value={location}
+                onChange={(e) => handleLocationChange(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue font-medium"
               />
@@ -156,7 +175,9 @@ export default function SearchBar() {
                       className="px-4 py-3 hover:bg-gray-100 cursor-pointer transition-colors flex items-center"
                     >
                       <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                      <span className="text-gray-700">{suggestion}</span>
+                      <span className="text-gray-700">
+                        {suggestion.name} ({suggestion.type === 'city' ? 'Cidade' : 'Região'})
+                      </span>
                     </div>
                   ))}
                 </div>
