@@ -49,18 +49,20 @@ export default function Emprestimos() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
-                  href="https://wa.me/5561993336757"
+                  href="https://wa.me/5561993336757?text=Oi%2C%20Quero%20uma%20simula%C3%A7%C3%A3o%20SIAPE"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block bg-white text-rd-blue hover:bg-gray-100 rounded-lg px-8 py-4 text-lg font-bold shadow-xl transition-colors text-center"
                 >
-                  FALAR COM ESPECIALISTA
+                  SIAPE
                 </a>
                 <a
-                  href="#operacoes"
-                  className="inline-block border-2 border-white text-white hover:bg-white/10 rounded-lg px-8 py-4 text-lg font-bold transition-colors text-center"
+                  href="https://wa.me/5561993336757?text=Oi%2C%20Quero%20uma%20simula%C3%A7%C3%A3o%20INSS"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-white text-rd-blue hover:bg-gray-100 rounded-lg px-8 py-4 text-lg font-bold shadow-xl transition-colors text-center"
                 >
-                  SAIBA MAIS
+                  INSS
                 </a>
               </div>
             </motion.div>
@@ -81,8 +83,8 @@ export default function Emprestimos() {
                 <p className="text-blue-100">A partir de 1,5% a.m.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20">
-                <p className="text-4xl font-bold text-white mb-2">Aprovação rápida</p>
-                <p className="text-blue-100">Em até 48 horas úteis</p>
+                <p className="text-4xl font-bold text-white mb-2">FALE COM ESPECIALISTA</p>
+                <p className="text-blue-100">24 horas úteis</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20">
                 <p className="text-4xl font-bold text-white mb-2">100% Seguro</p>

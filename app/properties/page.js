@@ -204,7 +204,6 @@ function PropertiesContent() {
             </button>
           </div>
 
-          {/* Valor (Price Range) */}
           <div className="flex flex-col md:flex-row gap-4 items-end mt-4">
             <div className="flex-1">
               <label className="text-sm font-medium text-gray-700 mb-2 block">Valor Mínimo</label>

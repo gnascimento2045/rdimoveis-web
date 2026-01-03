@@ -32,6 +32,7 @@ export default function Navbar() {
             <Link href="/emprestimos" className="text-gray-700 hover:text-rd-blue transition-colors font-medium">
               EMPRESTIMOS SIAPE OU INSS
             </Link>
+            <span className="text-gray-400">|</span>
             <a
               href="https://wa.me/5561993336757?text=Oi,%20quero%20simular%20o%20valor%20do%20meu%20imovel!"
               target="_blank"
@@ -40,6 +41,7 @@ export default function Navbar() {
             >
               AVALIE E VENDA SEU IMÓVEL
             </a>
+            <span className="text-gray-400">|</span>
             <a
               href="https://wa.me/5561993336757"
               target="_blank"
