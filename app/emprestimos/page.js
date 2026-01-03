@@ -31,18 +31,18 @@ export default function Emprestimos() {
       {/* Hero Section */}
       <section className="relative pt-32 pb-24 flex items-center justify-center bg-gradient-to-r from-slate-900 via-rd-blue to-blue-700">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?crop=entropy&cs=srgb&fm=jpg&q=85)', backgroundSize: 'cover'}}></div>
+          <div className="absolute inset-0" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?crop=entropy&cs=srgb&fm=jpg&q=85)', backgroundSize: 'cover' }}></div>
         </div>
         <div className="relative z-10 container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="text-white"
             >
               <p className="text-sm font-bold text-blue-200 mb-4 uppercase tracking-wider">SOLUÇÕES FINANCEIRAS</p>
               <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-                EMPRÉSTIMOS<br/>CONSIGNADOS
+                EMPRÉSTIMOS<br />CONSIGNADOS
               </h1>
               <p className="text-xl text-blue-100 mb-8 leading-relaxed">
                 Taxas reduzidas e processo rápido para servidores públicos federais e aposentados do INSS
@@ -68,7 +68,7 @@ export default function Emprestimos() {
             </motion.div>
 
             {/* Stats */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
@@ -83,8 +83,8 @@ export default function Emprestimos() {
                 <p className="text-blue-100">A partir de 1,5% a.m.</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20">
-                <p className="text-4xl font-bold text-white mb-2">FALE COM ESPECIALISTA</p>
-                <p className="text-blue-100">24 horas úteis</p>
+                <p className="text-4xl font-bold text-white mb-2">Pagamento rápido</p>
+                <p className="text-blue-100">Liberação em até 24 horas úteis</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20">
                 <p className="text-4xl font-bold text-white mb-2">100% Seguro</p>
