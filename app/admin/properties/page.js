@@ -70,7 +70,7 @@ export default function AdminProperties() {
       
       if (editingProperty) {
         
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${editingProperty.id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${editingProperty.id}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -78,9 +78,11 @@ export default function AdminProperties() {
           },
           body: JSON.stringify(propertyData)
         })
+        const data = await response.json()
+        return data
       } else {
         
-        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -88,13 +90,12 @@ export default function AdminProperties() {
           },
           body: JSON.stringify(propertyData)
         })
+        const data = await response.json()
+        return data
       }
-
-      setShowModal(false)
-      setEditingProperty(null)
-      fetchProperties()
     } catch (error) {
       console.error('Erro ao salvar:', error)
+      throw error
     }
   }
 
@@ -192,6 +193,7 @@ export default function AdminProperties() {
         onClose={() => {
           setShowModal(false)
           setEditingProperty(null)
+          fetchProperties()
         }}
         onSave={handleSaveProperty}
         property={editingProperty}
