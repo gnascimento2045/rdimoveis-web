@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { LogIn } from 'lucide-react'
+import Image from 'next/image'
 
 export default function AdminLogin() {
     const router = useRouter()
@@ -11,6 +11,20 @@ export default function AdminLogin() {
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [heroImage, setHeroImage] = useState('')
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings`)
+                const data = await res.json()
+                setHeroImage(data['hero-image']?.url || '')
+            } catch (err) {
+                console.error('Erro ao carregar imagem de fundo', err)
+            }
+        }
+        load()
+    }, [])
 
     const handleLogin = async (e) => {
         e.preventDefault()
@@ -49,19 +63,27 @@ export default function AdminLogin() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-rd-blue to-blue-700 flex items-center justify-center p-4">
+        <div
+            className="relative min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-rd-blue to-blue-700 bg-cover bg-center"
+            style={heroImage ? { backgroundImage: `url(${heroImage})` } : {}}
+        >
+            <div className="absolute inset-0 bg-black/50" />
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md"
+                className="relative w-full max-w-md"
             >
                 <div className="bg-white rounded-lg shadow-2xl p-8">
-                    <div className="text-center mb-8">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rd-blue mb-4">
-                            <LogIn className="w-8 h-8 text-white" />
-                        </div>
-                        <h1 className="text-3xl font-bold text-gray-900">Admin</h1>
-                        <p className="text-gray-600 mt-2">RD IMÓVEIS DF</p>
+                    <div className="text-center mb-8 flex flex-col items-center gap-3">
+                        <Image
+                            src="/assets/logo.png"
+                            alt="RD IMÓVEIS DF"
+                            width={120}
+                            height={120}
+                            className="h-16 w-auto object-contain"
+                            priority
+                        />
+                        <h1 className="text-3xl font-bold text-gray-900">LOGIN ADMIN</h1>
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-6">
@@ -114,11 +136,6 @@ export default function AdminLogin() {
                         </button>
                     </form>
 
-                    <div className="mt-6 pt-6 border-t border-gray-200">
-                        <p className="text-xs text-gray-500 text-center">
-                            Credenciais padrão: rdimoveis@gmail.com / 12345678
-                        </p>
-                    </div>
                 </div>
             </motion.div>
         </div>

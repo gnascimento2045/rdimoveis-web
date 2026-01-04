@@ -16,21 +16,20 @@ export default function Home() {
   const [selectedType, setSelectedType] = useState('comprar')
   const [loading, setLoading] = useState(true)
   const [heroImageUrl, setHeroImageUrl] = useState('https://images.unsplash.com/photo-1625426242633-3be4b3379dfb?crop=entropy&cs=srgb&fm=jpg&q=85')
+  const [valuationImageUrl, setValuationImageUrl] = useState('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?crop=entropy&cs=srgb&fm=jpg&q=85')
 
   useEffect(() => {
     loadProperties()
-    loadHeroImage()
+    loadImages()
   }, [])
 
-  const loadHeroImage = async () => {
+  const loadImages = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings/hero-image`)
-      if (response.ok) {
-        const data = await response.json()
-        if (data.url) {
-          setHeroImageUrl(data.url)
-        }
-      }
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings`)
+      if (!response.ok) return
+      const data = await response.json()
+      if (data['hero-image']?.url) setHeroImageUrl(data['hero-image'].url)
+      if (data['valuation-image']?.url) setValuationImageUrl(data['valuation-image'].url)
     } catch (error) {
       console.error('Error loading hero image:', error)
     }
@@ -44,6 +43,7 @@ export default function Home() {
     setLoading(true)
     try {
       let data = await propertyService.getProperties({ active: true })
+      data = data.filter(p => p.is_featured)
       data = data.slice(0, 12)
       setAllProperties(data)
       filterProperties('comprar', data)
@@ -165,7 +165,7 @@ export default function Home() {
       </section>
 
       {/* Saiba Quanto Vale Seu Imóvel */}
-      <section className="relative py-24 flex items-center justify-center bg-cover bg-center" style={{backgroundImage: 'url(https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?crop=entropy&cs=srgb&fm=jpg&q=85)'}}>
+      <section className="relative py-24 flex items-center justify-center bg-cover bg-center" style={{backgroundImage: `url(${valuationImageUrl})`}}>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 container mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 drop-shadow-2xl">

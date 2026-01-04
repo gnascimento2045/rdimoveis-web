@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Home, Star, Settings, LogOut, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Home, Settings, LogOut, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 
 export default function AdminSidebar({ onLogout }) {
@@ -12,7 +12,6 @@ export default function AdminSidebar({ onLogout }) {
   const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
     { icon: Home, label: 'Imóveis', href: '/admin/properties' },
-    { icon: Star, label: 'Destaques', href: '/admin/featured' },
     { icon: Settings, label: 'Configurações', href: '/admin/settings' },
   ]
 
@@ -60,6 +59,14 @@ export default function AdminSidebar({ onLogout }) {
         </nav>
 
         <div className="border-t border-slate-700 pt-6">
+          <Link
+            href="/admin/change-password"
+            onClick={() => setIsOpen(false)}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-slate-800 transition-colors"
+          >
+            <span>Trocar senha</span>
+          </Link>
+
           <button
             onClick={onLogout}
             className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-slate-800 transition-colors"

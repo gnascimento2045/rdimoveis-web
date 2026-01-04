@@ -6,11 +6,12 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import PropertyGalleryModal from '@/components/PropertyGalleryModal'
-import { MapPin, Bed, Bath, Square, MessageCircle, Image as ImageIcon, Film, ChevronRight, Video, Map, ChevronLeft } from 'lucide-react'
+import { MapPin, Bed, Bath, Square, Image as ImageIcon, Film, ChevronRight, Video, Map, ChevronLeft } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import { propertyService } from '@/services/api'
 import { formatPriceDisplay, getWhatsAppLink, getFinalidadeBadge, getCondicaoBadge } from '@/lib/utils'
+import Image from 'next/image'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
@@ -428,9 +429,9 @@ export default function PropertyDetailPage() {
                   href={getWhatsAppLink(property)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg py-4 text-lg font-bold shadow-lg flex items-center justify-center space-x-2 transition-colors"
+                  className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg py-4 text-lg font-bold shadow-lg flex items-center justify-center space-x-3 transition-colors"
                 >
-                  <MessageCircle className="h-5 w-5" />
+                  <Image src="/assets/whatsapp.png" alt="WhatsApp" width={28} height={28} className="h-7 w-7" />
                   <span>WhatsApp</span>
                 </a>
 

@@ -4,15 +4,17 @@ import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import Image from 'next/image'
 import { CheckCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function Emprestimos() {
   const operations = [
     {
-      title: 'Margem Livre - Empréstimo Novo',
+          className="inline-flex items-center gap-3 bg-white text-rd-blue hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold shadow-lg transition-colors"
       description: 'Solicite um empréstimo consignado novo com as melhores taxas do mercado.'
-    },
+          <Image src="/assets/whatsapp.png" alt="WhatsApp" width={28} height={28} className="h-7 w-7" />
+          <span>Simular no WhatsApp</span>
     {
       title: 'Portabilidade',
       description: 'Transfira seu empréstimo consignado de outra instituição com facilidade.'

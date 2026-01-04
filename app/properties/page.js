@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import Image from 'next/image'
 import PropertyCard from '@/components/PropertyCard'
 import { propertyService } from '@/services/api'
 import { motion } from 'framer-motion'
@@ -12,9 +13,7 @@ import { motion } from 'framer-motion'
 function PropertiesContent() {
   const searchParams = useSearchParams()
   const [properties, setProperties] = useState([])
-  const [loading, setLoading] = useState(true)
   const [neighborhoods, setNeighborhoods] = useState([])
-  const [cities, setCities] = useState([])
   const [filters, setFilters] = useState({
     type: searchParams.get('type') || '',
     status: '',
