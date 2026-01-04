@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import PropertyGalleryModal from '@/components/PropertyGalleryModal'
-import { MapPin, Bed, Bath, Square, MessageCircle, Image as ImageIcon, Film, ChevronRight } from 'lucide-react'
+import { MapPin, Bed, Bath, Square, MessageCircle, Image as ImageIcon, Film, ChevronRight, Video, Map, ChevronLeft } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination } from 'swiper/modules'
 import { propertyService } from '@/services/api'
@@ -23,6 +23,7 @@ export default function PropertyDetailPage() {
   const [mediaItems, setMediaItems] = useState([])
   const [activeTab, setActiveTab] = useState('fotos') // 'fotos', 'mapa', 'videos'
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null)
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
 
   useEffect(() => {
     loadProperty()
@@ -86,6 +87,28 @@ export default function PropertyDetailPage() {
         .map(m => ({ url: m.media_url, type: m.media_type }))
     : [{ url: 'https://images.unsplash.com/photo-1757439402214-2311405d70bd?crop=entropy&cs=srgb&fm=jpg&q=85', type: 'image' }]
 
+  const videos = mediaItems
+    .filter(m => m.media_type === 'video')
+    .map(m => m.media_url)
+
+  const getPlayableUrl = (url) => {
+    if (!url) return ''
+
+    // YouTube watch or share links -> embed
+    const ytWatch = url.match(/youtube\.com\/watch\?v=([\w-]{11})/)
+    const ytShort = url.match(/youtu\.be\/([\w-]{11})/)
+    const youtubeId = ytWatch?.[1] || ytShort?.[1]
+    if (youtubeId) return `https://www.youtube.com/embed/${youtubeId}`
+
+    // Direct video URLs (mp4/webm/etc.) stay as-is
+    return url
+  }
+
+  const isEmbedUrl = (url) => {
+    if (!url) return false
+    return /youtube\.com|youtu\.be/.test(url)
+  }
+
   // Renderizar campo de informação apenas se preenchido
   const renderInfo = (label, value, icon = null) => {
     if (!value && value !== 0) return null
@@ -119,33 +142,36 @@ export default function PropertyDetailPage() {
             <div className="mb-8 flex gap-4 border-b border-gray-200">
               <button
                 onClick={() => setActiveTab('fotos')}
-                className={`px-6 py-3 font-bold transition-colors ${
+                className={`px-6 py-3 font-bold transition-colors flex items-center gap-2 ${
                   activeTab === 'fotos'
                     ? 'text-rd-blue border-b-2 border-rd-blue -mb-[2px]'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                📷 FOTOS
+                <ImageIcon className="w-5 h-5" />
+                FOTOS
               </button>
               <button
                 onClick={() => setActiveTab('videos')}
-                className={`px-6 py-3 font-bold transition-colors ${
+                className={`px-6 py-3 font-bold transition-colors flex items-center gap-2 ${
                   activeTab === 'videos'
                     ? 'text-rd-blue border-b-2 border-rd-blue -mb-[2px]'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                🎥 VÍDEOS
+                <Video className="w-5 h-5" />
+                VÍDEOS
               </button>
               <button
                 onClick={() => setActiveTab('mapa')}
-                className={`px-6 py-3 font-bold transition-colors ${
+                className={`px-6 py-3 font-bold transition-colors flex items-center gap-2 ${
                   activeTab === 'mapa'
                     ? 'text-rd-blue border-b-2 border-rd-blue -mb-[2px]'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                🗺️ MAPA
+                <Map className="w-5 h-5" />
+                MAPA
               </button>
             </div>
 
@@ -192,63 +218,67 @@ export default function PropertyDetailPage() {
                     </div>
                   ))}
                 </div>
-
-                {/* Botão Ver mais Fotos (abaixo da galeria) */}
-                {images.length > 1 && (
-                  <button
-                    onClick={() => setGalleryOpen(true)}
-                    className="mb-8 w-full bg-rd-blue hover:bg-rd-blue-hover text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
-                  >
-                    <ImageIcon className="w-5 h-5" />
-                    Ver todas as fotos ({images.length})
-                  </button>
-                )}
               </>
             )}
 
             {/* Conteúdo - VÍDEOS */}
             {activeTab === 'videos' && (
-              <div className="space-y-6">
-                {property.videos && property.videos.length > 0 ? (
-                  <>
-                    {/* Vídeo em Tela Cheia */}
-                    <div className="w-full bg-black rounded-xl overflow-hidden aspect-video">
-                      <video
-                        key={selectedVideoUrl}
-                        src={selectedVideoUrl || property.videos[0]}
-                        controls
-                        autoPlay
-                        className="w-full h-full"
-                      />
+              <div className="mb-8">
+                {videos && videos.length > 0 ? (
+                  <div className="space-y-4">
+                    {/* Player de Vídeo Grande */}
+                    <div className="relative bg-black rounded-2xl overflow-hidden shadow-2xl aspect-video">
+                      {isEmbedUrl(videos[currentVideoIndex]) ? (
+                        <iframe
+                          key={videos[currentVideoIndex]}
+                          src={getPlayableUrl(videos[currentVideoIndex])}
+                          title={`Vídeo ${currentVideoIndex + 1}`}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className="w-full h-full"
+                        />
+                      ) : (
+                        <video
+                          key={videos[currentVideoIndex]}
+                          src={getPlayableUrl(videos[currentVideoIndex])}
+                          controls
+                          autoPlay
+                          className="w-full h-full"
+                        />
+                      )}
                     </div>
 
-                    {/* Lista de Vídeos para Seleção */}
-                    {property.videos.length > 1 && (
-                      <div>
-                        <h3 className="font-semibold text-gray-900 mb-3">Outros vídeos:</h3>
-                        <div className="grid grid-cols-2 gap-3">
-                          {property.videos.map((video, idx) => (
-                            <button
-                              key={idx}
-                              onClick={() => setSelectedVideoUrl(video)}
-                              className={`p-3 rounded-lg border-2 transition-all text-left ${
-                                selectedVideoUrl === video || (!selectedVideoUrl && idx === 0)
-                                  ? 'border-rd-blue bg-blue-50'
-                                  : 'border-gray-200 hover:border-rd-blue'
-                              }`}
-                            >
-                              <div className="text-sm font-medium text-gray-900 truncate">
-                                🎥 Vídeo {idx + 1}
-                              </div>
-                              <div className="text-xs text-gray-500 truncate mt-1">{video}</div>
-                            </button>
-                          ))}
+                    {/* Navegação e Contador */}
+                    {videos.length > 1 && (
+                      <div className="flex items-center justify-between px-4">
+                        <button
+                          onClick={() => setCurrentVideoIndex(prev => prev > 0 ? prev - 1 : videos.length - 1)}
+                          className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:border-rd-blue hover:text-rd-blue transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <ChevronLeft className="w-5 h-5" />
+                          Anterior
+                        </button>
+                        
+                        <div className="text-center">
+                          <p className="text-sm text-gray-600">Vídeo</p>
+                          <p className="text-lg font-bold text-gray-900">
+                            {currentVideoIndex + 1} / {videos.length}
+                          </p>
                         </div>
+                        
+                        <button
+                          onClick={() => setCurrentVideoIndex(prev => prev < videos.length - 1 ? prev + 1 : 0)}
+                          className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:border-rd-blue hover:text-rd-blue transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Próximo
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
                       </div>
                     )}
-                  </>
+                  </div>
                 ) : (
-                  <div className="py-16 text-center">
+                  <div className="py-16 text-center bg-gray-50 rounded-2xl">
+                    <Video className="w-16 h-16 mx-auto mb-4 text-gray-400" />
                     <p className="text-gray-500 text-lg">Nenhum vídeo adicionado para este imóvel</p>
                   </div>
                 )}

@@ -58,6 +58,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
     area: '',
     is_featured: false,
     videos: [],
+    videoUrlInput: '', // Campo temporário para input de URL
     characteristics: {
       internas: [],
       externas: [],
@@ -107,7 +108,20 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
 
       const data = await response.json()
       console.log('Mídias carregadas:', data)
-      setUploadedMedia(data)
+      
+      // Separar imagens e vídeos
+      const images = data.filter(m => m.media_type === 'image')
+      const videos = data.filter(m => m.media_type === 'video').map(m => ({ url: m.media_url, id: m.id }))
+      
+      setUploadedMedia(images)
+      
+      // Carregar URLs de vídeo no formData
+      if (videos.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          videos: videos
+        }))
+      }
     } catch (err) {
       console.error('Erro ao carregar mídias:', err)
     }
@@ -225,7 +239,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
     setStep(2)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
     const finalData = {
@@ -234,7 +248,8 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
       images: uploadedMedia.map(m => m.media_url)
     }
 
-    onSave(finalData)
+    // Salvar a propriedade
+    await onSave(finalData)
   }
 
   const handleClose = () => {
@@ -329,23 +344,214 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
           {step === 1 && !property ? (
-            <div className="p-6">
+            <div className="p-6 space-y-6">
               <MediaUploader
                 onMediaUploadComplete={handleMediaUploadComplete}
                 propertyId={propertyId}
                 existingMedia={uploadedMedia}
               />
+              
+              {/* Vídeos - URLs */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Vídeos (URLs)</h3>
+                <div className="space-y-4">
+                  {/* Lista de vídeos adicionados */}
+                  {formData.videos && formData.videos.length > 0 && (
+                    <div className="space-y-3">
+                      {formData.videos.map((video, idx) => (
+                        <div key={idx} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-700 truncate">
+                              {typeof video === 'string' ? video : video.url}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              // Se tem ID, deletar do backend
+                              if (typeof video === 'object' && video.id && propertyId) {
+                                try {
+                                  const token = localStorage.getItem('admin_token') || localStorage.getItem('token')
+                                  await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${propertyId}/media/${video.id}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                      'Authorization': `Bearer ${token}`
+                                    }
+                                  })
+                                } catch (error) {
+                                  console.error('Erro ao deletar vídeo:', error)
+                                }
+                              }
+                              
+                              const newVideos = formData.videos.filter((_, i) => i !== idx)
+                              setFormData(prev => ({ ...prev, videos: newVideos }))
+                            }}
+                            className="px-3 py-1 text-red-600 hover:text-red-800 font-medium text-sm"
+                          >
+                            Remover
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Input para adicionar nova URL */}
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      value={formData.videoUrlInput || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, videoUrlInput: e.target.value }))}
+                      placeholder="Cole a URL do vídeo aqui (YouTube, Vimeo, etc.)"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rd-blue focus:border-transparent"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const url = formData.videoUrlInput?.trim()
+                        if (url && propertyId) {
+                          try {
+                            const token = localStorage.getItem('admin_token') || localStorage.getItem('token')
+                            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${propertyId}/media/video-url`, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                              },
+                              body: JSON.stringify({ video_url: url })
+                            })
+                            
+                            if (response.ok) {
+                              const data = await response.json()
+                              setFormData(prev => ({
+                                ...prev,
+                                videos: [...(prev.videos || []), { url: data.media_url, id: data.id }],
+                                videoUrlInput: ''
+                              }))
+                            }
+                          } catch (error) {
+                            console.error('Erro ao adicionar vídeo:', error)
+                          }
+                        }
+                      }}
+                      className="px-6 py-2 bg-rd-blue text-white rounded-lg font-medium hover:bg-rd-blue-hover transition-colors whitespace-nowrap"
+                    >
+                      + Adicionar
+                    </button>
+                  </div>
+                  
+                  <p className="text-xs text-gray-500">
+                    Cole a URL completa do vídeo (ex: https://youtube.com/watch?v=...)
+                  </p>
+                </div>
+              </div>
             </div>
           ) : step === 1 && property ? (
-            <div className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Gerenciar Mídias</h3>
-              <MediaManager
-                onMediaChange={setUploadedMedia}
-                propertyId={propertyId}
-                existingMedia={uploadedMedia}
-                isEditing={true}
-              />
-              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 mt-6">
+            <div className="p-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Gerenciar Mídias</h3>
+                <MediaManager
+                  onMediaChange={setUploadedMedia}
+                  propertyId={propertyId}
+                  existingMedia={uploadedMedia}
+                  isEditing={true}
+                />
+              </div>
+              
+              {/* Vídeos - URLs */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Vídeos (URLs)</h3>
+                <div className="space-y-4">
+                  {/* Lista de vídeos adicionados */}
+                  {formData.videos && formData.videos.length > 0 && (
+                    <div className="space-y-3">
+                      {formData.videos.map((video, idx) => (
+                        <div key={idx} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-700 truncate">
+                              {typeof video === 'string' ? video : video.url}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              // Se tem ID, deletar do backend
+                              if (typeof video === 'object' && video.id && propertyId) {
+                                try {
+                                  const token = localStorage.getItem('admin_token') || localStorage.getItem('token')
+                                  await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${propertyId}/media/${video.id}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                      'Authorization': `Bearer ${token}`
+                                    }
+                                  })
+                                } catch (error) {
+                                  console.error('Erro ao deletar vídeo:', error)
+                                }
+                              }
+                              
+                              const newVideos = formData.videos.filter((_, i) => i !== idx)
+                              setFormData(prev => ({ ...prev, videos: newVideos }))
+                            }}
+                            className="px-3 py-1 text-red-600 hover:text-red-800 font-medium text-sm"
+                          >
+                            Remover
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Input para adicionar nova URL */}
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      value={formData.videoUrlInput || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, videoUrlInput: e.target.value }))}
+                      placeholder="Cole a URL do vídeo aqui (YouTube, Vimeo, etc.)"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rd-blue focus:border-transparent"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const url = formData.videoUrlInput?.trim()
+                        if (url && propertyId) {
+                          try {
+                            const token = localStorage.getItem('admin_token') || localStorage.getItem('token')
+                            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${propertyId}/media/video-url`, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                              },
+                              body: JSON.stringify({ video_url: url })
+                            })
+                            
+                            if (response.ok) {
+                              const data = await response.json()
+                              setFormData(prev => ({
+                                ...prev,
+                                videos: [...(prev.videos || []), { url: data.media_url, id: data.id }],
+                                videoUrlInput: ''
+                              }))
+                            }
+                          } catch (error) {
+                            console.error('Erro ao adicionar vídeo:', error)
+                          }
+                        }
+                      }}
+                      className="px-6 py-2 bg-rd-blue text-white rounded-lg font-medium hover:bg-rd-blue-hover transition-colors whitespace-nowrap"
+                    >
+                      + Adicionar
+                    </button>
+                  </div>
+                  
+                  <p className="text-xs text-gray-500">
+                    Cole a URL completa do vídeo (ex: https://youtube.com/watch?v=...)
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={() => setStep(2)}
@@ -608,47 +814,6 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
                       Destaque na página inicial
                     </label>
                   </div>
-                </div>
-              </div>
-
-              {/* Vídeos */}
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Vídeos</h3>
-                <div className="space-y-4">
-                  {formData.videos && formData.videos.length > 0 && (
-                    <div className="space-y-3">
-                      {formData.videos.map((video, idx) => (
-                        <div key={idx} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
-                          <span className="flex-1 text-sm text-gray-700 truncate">{video}</span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const newVideos = formData.videos.filter((_, i) => i !== idx)
-                              setFormData(prev => ({ ...prev, videos: newVideos }))
-                            }}
-                            className="px-3 py-1 text-red-600 hover:text-red-800 font-medium text-sm"
-                          >
-                            Remover
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const videoUrl = prompt('Digite a URL do vídeo:')
-                      if (videoUrl && videoUrl.trim()) {
-                        setFormData(prev => ({
-                          ...prev,
-                          videos: [...(prev.videos || []), videoUrl.trim()]
-                        }))
-                      }
-                    }}
-                    className="w-full px-4 py-2 border-2 border-dashed border-rd-blue text-rd-blue rounded-lg font-medium hover:bg-rd-blue hover:text-white transition-colors"
-                  >
-                    + Adicionar Vídeo
-                  </button>
                 </div>
               </div>
 
