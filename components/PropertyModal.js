@@ -314,23 +314,10 @@ export default function PropertyModal({ isOpen, onClose, onSave, property }) {
             </div>
           </div>
 
-          {/* Extras */}
+          {/* Opções */}
           <div>
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Extras</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Opções</h3>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  URL do Vídeo
-                </label>
-                <input
-                  type="url"
-                  name="video_url"
-                  value={formData.video_url}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
-                  placeholder="https://..."
-                />
-              </div>
               <div className="flex items-center">
                 <input
                   type="checkbox"

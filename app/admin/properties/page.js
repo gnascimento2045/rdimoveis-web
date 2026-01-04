@@ -14,7 +14,7 @@ export default function AdminProperties() {
     try {
       setLoading(true)
       const token = localStorage.getItem('admin_token')
-      const response = await fetch('http://localhost:8000/api/properties?limit=1000', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties?limit=1000`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       const data = await response.json()
@@ -35,7 +35,7 @@ export default function AdminProperties() {
 
     try {
       const token = localStorage.getItem('admin_token')
-      await fetch(`http://localhost:8000/api/properties/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -48,7 +48,7 @@ export default function AdminProperties() {
   const handleToggleActive = async (id, currentStatus) => {
     try {
       const token = localStorage.getItem('admin_token')
-      await fetch(`http://localhost:8000/api/properties/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -70,7 +70,7 @@ export default function AdminProperties() {
       
       if (editingProperty) {
         // Atualizar
-        await fetch(`http://localhost:8000/api/properties/${editingProperty.id}`, {
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${editingProperty.id}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -80,7 +80,7 @@ export default function AdminProperties() {
         })
       } else {
         // Criar novo
-        await fetch('http://localhost:8000/api/properties', {
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,

@@ -14,7 +14,7 @@ export default function AdminFeatured() {
     try {
       setLoading(true)
       const token = localStorage.getItem('admin_token')
-      const response = await fetch('http://localhost:8000/api/neighborhoods', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/neighborhoods`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       const data = await response.json()
@@ -35,7 +35,7 @@ export default function AdminFeatured() {
 
     try {
       const token = localStorage.getItem('admin_token')
-      await fetch(`http://localhost:8000/api/neighborhoods/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/neighborhoods/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })

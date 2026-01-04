@@ -22,12 +22,11 @@ const MediaManager = ({ onMediaChange, propertyId, existingMedia = [], isEditing
     }
   }, [existingMedia]);
 
-  const MAX_FILE_SIZE = 50 * 1024 * 1024;
+  const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
   const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-  const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo', 'video/x-matrosvideo'];
 
   const isAllowedFile = (file) => {
-    return [...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES].includes(file.type);
+    return ALLOWED_IMAGE_TYPES.includes(file.type);
   };
 
   const handleDrag = (e) => {
@@ -66,7 +65,7 @@ const MediaManager = ({ onMediaChange, propertyId, existingMedia = [], isEditing
         const formData = new FormData();
         formData.append('file', file);
 
-        const response = await fetch(`http://localhost:8000/api/properties/${propertyId}/media`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${propertyId}/media`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('admin_token') || localStorage.getItem('token')}`
@@ -100,7 +99,7 @@ const MediaManager = ({ onMediaChange, propertyId, existingMedia = [], isEditing
 
   const handleRemoveMedia = async (mediaId) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/properties/${propertyId}/media/${mediaId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${propertyId}/media/${mediaId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('admin_token') || localStorage.getItem('token')}`
@@ -119,7 +118,7 @@ const MediaManager = ({ onMediaChange, propertyId, existingMedia = [], isEditing
 
   const handleUpdateOrder = async (mediaId, newOrder) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/properties/${propertyId}/media/${mediaId}/order`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${propertyId}/media/${mediaId}/order`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('admin_token') || localStorage.getItem('token')}`,
@@ -198,7 +197,7 @@ const MediaManager = ({ onMediaChange, propertyId, existingMedia = [], isEditing
     try {
       for (let i = 0; i < updatedMedia.length; i++) {
         await fetch(
-          `http://localhost:8000/api/properties/${propertyId}/media/${updatedMedia[i].id}/order`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${propertyId}/media/${updatedMedia[i].id}/order`,
           {
             method: 'PUT',
             headers: {

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import WhatsAppButton from '@/components/WhatsAppButton'
@@ -22,6 +21,8 @@ export default function PropertyDetailPage() {
   const [loading, setLoading] = useState(true)
   const [galleryOpen, setGalleryOpen] = useState(false)
   const [mediaItems, setMediaItems] = useState([])
+  const [activeTab, setActiveTab] = useState('fotos') // 'fotos', 'mapa', 'videos'
+  const [selectedVideoUrl, setSelectedVideoUrl] = useState(null)
 
   useEffect(() => {
     loadProperty()
@@ -34,11 +35,17 @@ export default function PropertyDetailPage() {
       
       // Carregar mídias da property_media
       try {
-        const response = await fetch(`http://localhost:8000/api/properties/${params.id}/media`)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${params.id}/media`)
         if (response.ok) {
           const media = await response.json()
-          // Ordenar por display_order
-          const sortedMedia = media.sort((a, b) => a.display_order - b.display_order)
+          // Ordenar: vídeos primeiro, depois imagens
+          const sortedMedia = media.sort((a, b) => {
+            const aIsVideo = a.media_type === 'video'
+            const bIsVideo = b.media_type === 'video'
+            if (aIsVideo && !bIsVideo) return -1
+            if (!aIsVideo && bIsVideo) return 1
+            return a.display_order - b.display_order
+          })
           setMediaItems(sortedMedia)
         }
       } catch (mediaError) {
@@ -74,8 +81,10 @@ export default function PropertyDetailPage() {
   }
 
   const images = mediaItems.length > 0
-    ? mediaItems.map(m => m.media_url)
-    : ['https://images.unsplash.com/photo-1757439402214-2311405d70bd?crop=entropy&cs=srgb&fm=jpg&q=85']
+    ? mediaItems
+        .filter(m => m.media_type === 'image')
+        .map(m => ({ url: m.media_url, type: m.media_type }))
+    : [{ url: 'https://images.unsplash.com/photo-1757439402214-2311405d70bd?crop=entropy&cs=srgb&fm=jpg&q=85', type: 'image' }]
 
   // Renderizar campo de informação apenas se preenchido
   const renderInfo = (label, value, icon = null) => {
@@ -106,59 +115,151 @@ export default function PropertyDetailPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            {/* Galeria de Imagens em Grid */}
-            <div className="mb-8 grid grid-cols-4 gap-3 h-96">
-              {/* Imagem Principal - Grande */}
-              <div 
-                className="col-span-2 row-span-2 rounded-2xl overflow-hidden shadow-xl cursor-pointer group relative"
-                onClick={() => setGalleryOpen(true)}
+            {/* Abas */}
+            <div className="mb-8 flex gap-4 border-b border-gray-200">
+              <button
+                onClick={() => setActiveTab('fotos')}
+                className={`px-6 py-3 font-bold transition-colors ${
+                  activeTab === 'fotos'
+                    ? 'text-rd-blue border-b-2 border-rd-blue -mb-[2px]'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
               >
-                <Image
-                  src={images[0]}
-                  alt={property.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-
-              {/* Grid de Imagens Menores */}
-              {images.slice(1, 5).map((image, index) => (
-                <div
-                  key={index}
-                  className="rounded-lg overflow-hidden shadow-lg cursor-pointer group relative"
-                  onClick={() => {
-                    setGalleryOpen(true);
-                  }}
-                >
-                  <Image
-                    src={image}
-                    alt={`${property.title} - ${index + 2}`}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  
-                  {/* Overlay Ver mais fotos na última imagem */}
-                  {index === 3 && images.length > 5 && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="text-white font-bold text-center">
-                        <p className="text-sm">Ver mais fotos</p>
-                        <p className="text-xs mt-1">+{images.length - 5}</p>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
+                📷 FOTOS
+              </button>
+              <button
+                onClick={() => setActiveTab('videos')}
+                className={`px-6 py-3 font-bold transition-colors ${
+                  activeTab === 'videos'
+                    ? 'text-rd-blue border-b-2 border-rd-blue -mb-[2px]'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                🎥 VÍDEOS
+              </button>
+              <button
+                onClick={() => setActiveTab('mapa')}
+                className={`px-6 py-3 font-bold transition-colors ${
+                  activeTab === 'mapa'
+                    ? 'text-rd-blue border-b-2 border-rd-blue -mb-[2px]'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                🗺️ MAPA
+              </button>
             </div>
 
-            {/* Botão Ver mais Fotos (abaixo da galeria) */}
-            {images.length > 1 && (
-              <button
-                onClick={() => setGalleryOpen(true)}
-                className="mb-8 w-full bg-rd-blue hover:bg-rd-blue-hover text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
-              >
-                <ImageIcon className="w-5 h-5" />
-                Ver todas as fotos ({images.length})
-              </button>
+            {/* Conteúdo - FOTOS */}
+            {activeTab === 'fotos' && (
+              <>
+                <div className="mb-8 grid grid-cols-4 gap-3 h-96">
+                  {/* Imagem Principal - Grande */}
+                  <div 
+                    className="col-span-2 row-span-2 rounded-2xl overflow-hidden shadow-xl cursor-pointer group relative"
+                    onClick={() => setGalleryOpen(true)}
+                  >
+                    <img
+                      src={images[0].url}
+                      alt={property.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+
+                  {/* Grid de Imagens Menores */}
+                  {images.slice(1, 5).map((media, index) => (
+                    <div
+                      key={index}
+                      className="rounded-lg overflow-hidden shadow-lg cursor-pointer group relative"
+                      onClick={() => {
+                        setGalleryOpen(true);
+                      }}
+                    >
+                      <img
+                        src={media.url}
+                        alt={`${property.title} - ${index + 2}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      
+                      {/* Overlay Ver mais fotos na última imagem */}
+                      {index === 3 && images.length > 5 && (
+                        <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button className="text-white font-bold text-center">
+                            <p className="text-sm">Ver mais fotos</p>
+                            <p className="text-xs mt-1">+{images.length - 5}</p>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Botão Ver mais Fotos (abaixo da galeria) */}
+                {images.length > 1 && (
+                  <button
+                    onClick={() => setGalleryOpen(true)}
+                    className="mb-8 w-full bg-rd-blue hover:bg-rd-blue-hover text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  >
+                    <ImageIcon className="w-5 h-5" />
+                    Ver todas as fotos ({images.length})
+                  </button>
+                )}
+              </>
+            )}
+
+            {/* Conteúdo - VÍDEOS */}
+            {activeTab === 'videos' && (
+              <div className="space-y-6">
+                {property.videos && property.videos.length > 0 ? (
+                  <>
+                    {/* Vídeo em Tela Cheia */}
+                    <div className="w-full bg-black rounded-xl overflow-hidden aspect-video">
+                      <video
+                        key={selectedVideoUrl}
+                        src={selectedVideoUrl || property.videos[0]}
+                        controls
+                        autoPlay
+                        className="w-full h-full"
+                      />
+                    </div>
+
+                    {/* Lista de Vídeos para Seleção */}
+                    {property.videos.length > 1 && (
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-3">Outros vídeos:</h3>
+                        <div className="grid grid-cols-2 gap-3">
+                          {property.videos.map((video, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setSelectedVideoUrl(video)}
+                              className={`p-3 rounded-lg border-2 transition-all text-left ${
+                                selectedVideoUrl === video || (!selectedVideoUrl && idx === 0)
+                                  ? 'border-rd-blue bg-blue-50'
+                                  : 'border-gray-200 hover:border-rd-blue'
+                              }`}
+                            >
+                              <div className="text-sm font-medium text-gray-900 truncate">
+                                🎥 Vídeo {idx + 1}
+                              </div>
+                              <div className="text-xs text-gray-500 truncate mt-1">{video}</div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="py-16 text-center">
+                    <p className="text-gray-500 text-lg">Nenhum vídeo adicionado para este imóvel</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Conteúdo - MAPA */}
+            {activeTab === 'mapa' && (
+              <div className="bg-gray-100 rounded-xl h-96 flex items-center justify-center">
+                <p className="text-gray-500">Mapa será exibido aqui</p>
+              </div>
             )}
 
             {/* Badges */}
@@ -184,28 +285,28 @@ export default function PropertyDetailPage() {
             {/* Detalhes Rápidos */}
             <div className="bg-gray-50 rounded-xl p-6 mb-8">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {property.bedrooms && (
+                {property.bedrooms > 0 && (
                   <div className="text-center">
                     <Bed className="h-6 w-6 mx-auto mb-2 text-rd-blue" />
                     <p className="text-sm text-gray-600">Quartos</p>
                     <p className="text-xl font-bold text-gray-900">{property.bedrooms}</p>
                   </div>
                 )}
-                {property.bathrooms && (
+                {property.bathrooms > 0 && (
                   <div className="text-center">
                     <Bath className="h-6 w-6 mx-auto mb-2 text-rd-blue" />
                     <p className="text-sm text-gray-600">Banheiros</p>
                     <p className="text-xl font-bold text-gray-900">{property.bathrooms}</p>
                   </div>
                 )}
-                {property.garages && (
+                {property.garages > 0 && (
                   <div className="text-center">
                     <div className="h-6 w-6 mx-auto mb-2 text-rd-blue">🚗</div>
                     <p className="text-sm text-gray-600">Garagem</p>
                     <p className="text-xl font-bold text-gray-900">{property.garages}</p>
                   </div>
                 )}
-                {property.area && (
+                {property.area > 0 && (
                   <div className="text-center">
                     <Square className="h-6 w-6 mx-auto mb-2 text-rd-blue" />
                     <p className="text-sm text-gray-600">Área</p>
@@ -223,35 +324,12 @@ export default function PropertyDetailPage() {
               </div>
             )}
 
-            {/* Vídeo */}
-            {property.video_url && (
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Film className="w-6 h-6" />
-                  Vídeo do Imóvel
-                </h2>
-                <div className="relative w-full h-96 rounded-xl overflow-hidden">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={property.video_url.replace('youtu.be/', 'youtube.com/embed/').replace('watch?v=', 'embed/')}
-                    title="Vídeo do imóvel"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="rounded-xl"
-                  />
-                </div>
-              </div>
-            )}
-
             {/* Características */}
             {property.characteristics && (
               <>
                 {(property.characteristics.internas?.length > 0 ||
                   property.characteristics.externas?.length > 0 ||
-                  property.characteristics.lazer?.length > 0 ||
-                  property.characteristics.extras?.length > 0) && (
+                  property.characteristics.lazer?.length > 0) && (
                   <div className="mb-8">
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">Características do Imóvel</h2>
 
@@ -288,20 +366,6 @@ export default function PropertyDetailPage() {
                         <h3 className="text-lg font-semibold text-gray-900 mb-3">Lazer</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                           {property.characteristics.lazer.map((char, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              <ChevronRight className="w-4 h-4 text-rd-blue" />
-                              <span className="text-gray-700">{char}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {property.characteristics.extras?.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Extras</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {property.characteristics.extras.map((char, idx) => (
                             <div key={idx} className="flex items-center gap-2">
                               <ChevronRight className="w-4 h-4 text-rd-blue" />
                               <span className="text-gray-700">{char}</span>

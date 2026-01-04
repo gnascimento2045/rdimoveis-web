@@ -18,7 +18,7 @@ export default function AdminSettings() {
     setSavingHero(true)
     try {
       const token = localStorage.getItem('admin_token')
-      await fetch('http://localhost:8000/api/settings/hero-image', {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings/hero-image`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

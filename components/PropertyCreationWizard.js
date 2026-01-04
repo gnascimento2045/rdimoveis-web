@@ -39,16 +39,6 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
       'Espaço Gourmet',
       'Hidromassagem',
       'Playground'
-    ],
-    extras: [
-      'Nascente',
-      'Cerca eletrônica',
-      'Escritório',
-      'Sauna',
-      'Garagem coberta',
-      'Jardim',
-      'Terraço',
-      'Vista panorâmica'
     ]
   }
 
@@ -57,6 +47,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
     description: '',
     finalidade: 'venda',
     condicao: 'novo',
+    tipo: 'apartamento',
     price: '',
     city: '',
     neighborhood: '',
@@ -65,13 +56,12 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
     bathrooms: '',
     garages: '',
     area: '',
-    video_url: '',
     is_featured: false,
+    videos: [],
     characteristics: {
       internas: [],
       externas: [],
-      lazer: [],
-      extras: []
+      lazer: []
     }
   })
 
@@ -104,7 +94,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
 
   const loadExistingMedia = async (propId) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/properties/${propId}/media`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${propId}/media`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('admin_token') || localStorage.getItem('token')}`
         }
@@ -125,7 +115,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
 
   const createEmptyProperty = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/properties', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('admin_token') || localStorage.getItem('token')}`,
@@ -136,6 +126,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
           description: 'Descrição pendente',
           finalidade: 'venda',
           condicao: 'novo',
+          tipo: 'apartamento',
           price: 0,
           city: 'Brasília',
           neighborhood: '',
@@ -144,8 +135,8 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
           bathrooms: 0,
           garages: 0,
           area: 0,
-          video_url: '',
           is_featured: false,
+          videos: [],
         })
       })
 
@@ -180,6 +171,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
       description: '',
       finalidade: 'venda',
       condicao: 'novo',
+      tipo: 'apartamento',
       price: '',
       city: '',
       neighborhood: '',
@@ -188,13 +180,12 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
       bathrooms: '',
       garages: '',
       area: '',
-      video_url: '',
       is_featured: false,
+      videos: [],
       characteristics: {
         internas: [],
         externas: [],
-        lazer: [],
-        extras: []
+        lazer: []
       }
     })
     setStep(1)
@@ -498,6 +489,31 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
                 </p>
               </div>
 
+              {/* Tipo de Imóvel */}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Tipo de Imóvel</h3>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tipo *
+                  </label>
+                  <select
+                    name="tipo"
+                    value={formData.tipo}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+                  >
+                    <option value="apartamento">Apartamento</option>
+                    <option value="casa">Casa</option>
+                    <option value="condominio">Condomínio</option>
+                    <option value="comercial">Comercial</option>
+                  </select>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  ✓ Selecione o tipo de imóvel que está cadastrando
+                </p>
+              </div>
+
               {/* Detalhes */}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Detalhes</h3>
@@ -576,23 +592,10 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
                 </div>
               </div>
 
-              {/* Extras */}
+              {/* Destaque */}
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Extras</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Opções</h3>
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      URL do Vídeo
-                    </label>
-                    <input
-                      type="url"
-                      name="video_url"
-                      value={formData.video_url}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
-                      placeholder="https://..."
-                    />
-                  </div>
                   <div className="flex items-center">
                     <input
                       type="checkbox"
@@ -605,6 +608,47 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
                       Destaque na página inicial
                     </label>
                   </div>
+                </div>
+              </div>
+
+              {/* Vídeos */}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Vídeos</h3>
+                <div className="space-y-4">
+                  {formData.videos && formData.videos.length > 0 && (
+                    <div className="space-y-3">
+                      {formData.videos.map((video, idx) => (
+                        <div key={idx} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                          <span className="flex-1 text-sm text-gray-700 truncate">{video}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const newVideos = formData.videos.filter((_, i) => i !== idx)
+                              setFormData(prev => ({ ...prev, videos: newVideos }))
+                            }}
+                            className="px-3 py-1 text-red-600 hover:text-red-800 font-medium text-sm"
+                          >
+                            Remover
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const videoUrl = prompt('Digite a URL do vídeo:')
+                      if (videoUrl && videoUrl.trim()) {
+                        setFormData(prev => ({
+                          ...prev,
+                          videos: [...(prev.videos || []), videoUrl.trim()]
+                        }))
+                      }
+                    }}
+                    className="w-full px-4 py-2 border-2 border-dashed border-rd-blue text-rd-blue rounded-lg font-medium hover:bg-rd-blue hover:text-white transition-colors"
+                  >
+                    + Adicionar Vídeo
+                  </button>
                 </div>
               </div>
 
@@ -668,27 +712,6 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
                           className="w-4 h-4 text-rd-blue rounded focus:ring-2 focus:ring-rd-blue"
                         />
                         <label htmlFor={`lazer-${characteristic}`} className="ml-2 text-sm text-gray-700 cursor-pointer">
-                          {characteristic}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Características Extras */}
-                <div>
-                  <h4 className="text-base font-bold text-gray-800 mb-3">Características Extras</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {characteristicsData.extras.map(characteristic => (
-                      <div key={characteristic} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id={`extra-${characteristic}`}
-                          checked={formData.characteristics.extras.includes(characteristic)}
-                          onChange={() => handleCharacteristicChange('extras', characteristic)}
-                          className="w-4 h-4 text-rd-blue rounded focus:ring-2 focus:ring-rd-blue"
-                        />
-                        <label htmlFor={`extra-${characteristic}`} className="ml-2 text-sm text-gray-700 cursor-pointer">
                           {characteristic}
                         </label>
                       </div>

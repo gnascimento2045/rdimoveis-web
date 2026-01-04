@@ -24,7 +24,7 @@ export default function Home() {
 
   const loadHeroImage = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/settings/hero-image')
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings/hero-image`)
       if (response.ok) {
         const data = await response.json()
         if (data.url) {

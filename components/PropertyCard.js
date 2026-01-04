@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { MapPin } from 'lucide-react'
 import { formatPrice, getFinalidadeBadge, getCondicaoBadge } from '@/lib/utils'
 import { motion } from 'framer-motion'
@@ -17,10 +16,17 @@ export default function PropertyCard({ property, index = 0 }) {
   useEffect(() => {
     const loadMedia = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/properties/${property.id}/media`)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/properties/${property.id}/media`)
         if (response.ok) {
           const media = await response.json()
-          const sortedMedia = media.sort((a, b) => a.display_order - b.display_order)
+          // Ordenar: vídeos primeiro, depois imagens
+          const sortedMedia = media.sort((a, b) => {
+            const aIsVideo = a.media_type === 'video'
+            const bIsVideo = b.media_type === 'video'
+            if (aIsVideo && !bIsVideo) return -1
+            if (!aIsVideo && bIsVideo) return 1
+            return a.display_order - b.display_order
+          })
           setMediaItems(sortedMedia)
         }
       } catch (error) {
@@ -30,15 +36,15 @@ export default function PropertyCard({ property, index = 0 }) {
     loadMedia()
   }, [property.id])
 
-  const images = mediaItems.length > 0 
-    ? mediaItems.map(m => m.media_url)
-    : ['https://images.unsplash.com/photo-1757439402214-2311405d70bd?crop=entropy&cs=srgb&fm=jpg&q=85']
+  const mediaUrls = mediaItems.length > 0 
+    ? mediaItems.map(m => ({ url: m.media_url, type: m.media_type }))
+    : [{ url: 'https://images.unsplash.com/photo-1757439402214-2311405d70bd?crop=entropy&cs=srgb&fm=jpg&q=85', type: 'image' }]
 
   // Auto-scroll de imagens ao passar o mouse
   useEffect(() => {
-    if (isHovering && images.length > 1) {
+    if (isHovering && mediaUrls.length > 1) {
       autoScrollInterval.current = setInterval(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % images.length)
+        setCurrentImageIndex((prev) => (prev + 1) % mediaUrls.length)
       }, 1500) // Troca de imagem a cada 1.5 segundos
     } else {
       if (autoScrollInterval.current) {
@@ -51,7 +57,7 @@ export default function PropertyCard({ property, index = 0 }) {
         clearInterval(autoScrollInterval.current)
       }
     }
-  }, [isHovering, images.length])
+  }, [isHovering, mediaUrls.length])
 
   return (
     <motion.div
@@ -65,24 +71,35 @@ export default function PropertyCard({ property, index = 0 }) {
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
-          {/* Imagem */}
+          {/* Imagem/Vídeo */}
           <div className="relative h-64 overflow-hidden bg-gray-100">
-            {images.length > 0 && (
-              <Image
-                src={images[currentImageIndex]}
-                alt={property.title}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                onError={(e) => {
-                  e.target.src = 'https://images.unsplash.com/photo-1757439402214-2311405d70bd?crop=entropy&cs=srgb&fm=jpg&q=85'
-                }}
-              />
+            {mediaUrls.length > 0 && (
+              mediaUrls[currentImageIndex].type === 'video' ? (
+                <video
+                  src={mediaUrls[currentImageIndex].url}
+                  alt={property.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  muted
+                  onError={(e) => {
+                    e.target.style.display = 'none'
+                  }}
+                />
+              ) : (
+                <img
+                  src={mediaUrls[currentImageIndex].url}
+                  alt={property.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => {
+                    e.target.style.display = 'none'
+                  }}
+                />
+              )
             )}
 
-            {/* Indicadores de Imagem */}
-            {images.length > 1 && (
+            {/* Indicadores de Imagem/Vídeo */}
+            {mediaUrls.length > 1 && (
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
-                {images.map((_, idx) => (
+                {mediaUrls.map((_, idx) => (
                   <div
                     key={idx}
                     className={`h-1.5 rounded-full transition-all ${
