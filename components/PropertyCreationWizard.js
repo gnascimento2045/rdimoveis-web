@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react'
 import { X, ChevronRight, Info, Image as ImageIcon } from 'lucide-react'
 import MediaUploader from './MediaUploader'
+import AutocompleteInput from './AutocompleteInput'
 import { maskCurrencyBRL, currencyToNumber } from '@/lib/utils'
+import { citiesSuggestions, neighborhoodsSuggestions } from '@/lib/locationData'
 
-export default function PropertyCreationWizard({ isOpen, onClose, onSave, property = null }) {
-  const [step, setStep] = useState(1) // Para criação: 1 = Dados, 2 = Mídias
-  const [activeTab, setActiveTab] = useState('info') // Para edição: 'info' ou 'media'
+export default function PropertyCreationWizard({ isOpen, onClose, onSave, property = null, showToast }) {
+  const [step, setStep] = useState(1)
+  const [activeTab, setActiveTab] = useState('info')
   const [uploadedMedia, setUploadedMedia] = useState([])
   const [propertyId, setPropertyId] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -77,7 +79,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
       const data = await response.json()
       const images = data.filter(m => m.media_type === 'image')
       const videos = data.filter(m => m.media_type === 'video').map(m => ({ url: m.media_url, id: m.id }))
-      
+
       setUploadedMedia(images)
       if (videos.length > 0) {
         setFormData(prev => ({ ...prev, videos: videos }))
@@ -152,39 +154,39 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
       }
 
       if (property) {
-        // Modo edição - atualizar
+
         await onSave(finalData)
-        alert('Imóvel atualizado com sucesso!')
+        showToast?.('Imóvel atualizado com sucesso!', 'success')
         handleClose()
       } else {
-        // Modo criação
+
         if (step === 1) {
-          // Etapa 1: Criar imóvel (inativo por padrão)
+
           finalData.active = false
           const saved = await onSave(finalData)
           const newPropertyId = saved?.id
-          
+
           if (!newPropertyId) {
-            alert('Erro ao criar imóvel. Tente novamente.')
+            showToast?.('Erro ao criar imóvel. Tente novamente.', 'error')
             return
           }
-          
+
           setPropertyId(newPropertyId)
-          setStep(2) // Avança para adicionar mídias
+          setStep(2)
         } else {
-          // Etapa 2: Ativar imóvel se tiver mídias
+
           if (uploadedMedia.length > 0) {
             await activateProperty(propertyId)
-            alert('Imóvel criado e ativado com sucesso!')
+            showToast?.('Imóvel criado e ativado com sucesso!', 'success')
           } else {
-            alert('Imóvel criado mas ficará inativo até adicionar imagens.')
+            showToast?.('Imóvel criado mas ficará inativo até adicionar imagens.', 'warning')
           }
           handleClose()
         }
       }
     } catch (err) {
       console.error('Erro:', err)
-      alert('Erro ao salvar: ' + (err.message || 'Erro desconhecido'))
+      showToast?.('Erro ao salvar: ' + (err.message || 'Erro desconhecido'), 'error')
     } finally {
       setLoading(false)
     }
@@ -225,7 +227,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
         },
         body: JSON.stringify({ video_url: url })
       })
-      
+
       if (response.ok) {
         const data = await response.json()
         setFormData(prev => ({
@@ -256,7 +258,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
 
   if (!isOpen) return null
 
-  // RENDERIZAR FORMULÁRIO DE INFORMAÇÕES
+
   const renderInfoForm = () => (
     <form onSubmit={handleSubmit} className="p-6 space-y-6">
       {/* Informações Principais */}
@@ -275,17 +277,22 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Cidade *</label>
-              <input
-                type="text" name="city" value={formData.city} onChange={handleChange} required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+              <AutocompleteInput
+                name="city"
+                value={formData.city}
+                onChange={(value) => setFormData({ ...formData, city: value })}
+                suggestions={citiesSuggestions}
                 placeholder="Ex: Brasília"
+                required
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Bairro / Região</label>
-              <input
-                type="text" name="neighborhood" value={formData.neighborhood} onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+              <AutocompleteInput
+                name="neighborhood"
+                value={formData.neighborhood}
+                onChange={(value) => setFormData({ ...formData, neighborhood: value })}
+                suggestions={neighborhoodsSuggestions}
                 placeholder="Ex: Águas Claras"
               />
             </div>
@@ -331,9 +338,8 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
             <select
               name="condicao" value={formData.condicao} onChange={handleChange} required
               disabled={formData.finalidade === 'lancamento'}
-              className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue ${
-                formData.finalidade === 'lancamento' ? 'bg-gray-100 cursor-not-allowed' : ''
-              }`}
+              className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue ${formData.finalidade === 'lancamento' ? 'bg-gray-100 cursor-not-allowed' : ''
+                }`}
             >
               {condicaoOptions.map(option => (
                 <option key={option} value={option}>
@@ -441,7 +447,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
       {/* Características */}
       <div>
         <h3 className="text-lg font-bold text-gray-900 mb-6">Características do Imóvel</h3>
-        
+
         {/* Características Internas */}
         <div className="mb-8">
           <h4 className="text-base font-bold text-gray-800 mb-3">Características Internas</h4>
@@ -521,7 +527,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
     </form>
   )
 
-  // RENDERIZAR SEÇÃO DE MÍDIAS
+
   const renderMediaSection = () => (
     <div className="p-6 space-y-6">
       <MediaUploader
@@ -529,7 +535,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
         propertyId={propertyId}
         existingMedia={uploadedMedia}
       />
-      
+
       {/* Vídeos */}
       <div className="border-t pt-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Vídeos (URLs)</h3>
@@ -554,7 +560,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
               ))}
             </div>
           )}
-          
+
           <div className="flex gap-2">
             <input
               type="url"
@@ -571,9 +577,9 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
               + Adicionar
             </button>
           </div>
-          
+
           <p className="text-xs text-gray-500">
-            Cole a URL completa do vídeo (ex: https://youtube.com/watch?v=...)
+            Cole a URL completa do vídeo (ex: https:
           </p>
         </div>
       </div>
@@ -624,7 +630,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
 
           {/* Progress / Tabs */}
           {!property ? (
-            // Modo Criação - Progress Bar
+
             <div className="flex items-center gap-4">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
@@ -651,16 +657,15 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
               </div>
             </div>
           ) : (
-            // Modo Edição - Tabs
+
             <div className="flex border-b border-gray-200 -mb-4">
               <button
                 type="button"
                 onClick={() => setActiveTab('info')}
-                className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors border-b-2 ${
-                  activeTab === 'info'
+                className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors border-b-2 ${activeTab === 'info'
                     ? 'border-rd-blue text-rd-blue'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                  }`}
               >
                 <Info className="w-5 h-5" />
                 Informações
@@ -668,11 +673,10 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
               <button
                 type="button"
                 onClick={() => setActiveTab('media')}
-                className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors border-b-2 ${
-                  activeTab === 'media'
+                className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors border-b-2 ${activeTab === 'media'
                     ? 'border-rd-blue text-rd-blue'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                  }`}
               >
                 <ImageIcon className="w-5 h-5" />
                 Mídias
@@ -684,10 +688,10 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
           {property ? (
-            // Modo Edição
+
             activeTab === 'info' ? renderInfoForm() : renderMediaSection()
           ) : (
-            // Modo Criação
+
             step === 1 ? renderInfoForm() : renderMediaSection()
           )}
         </div>
