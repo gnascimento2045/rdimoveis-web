@@ -103,7 +103,7 @@ function PropertiesContent() {
       if (filters.minPrice) {
         const minPriceNum = currencyToNumber(filters.minPrice)
         data = data.filter(p => {
-          if (p.price_on_request) return true
+          if (p.price_on_request) return false
           const price = p.price || p.rent_price || 0
           return price >= minPriceNum
         })
@@ -112,7 +112,7 @@ function PropertiesContent() {
       if (filters.maxPrice) {
         const maxPriceNum = currencyToNumber(filters.maxPrice)
         data = data.filter(p => {
-          if (p.price_on_request) return true
+          if (p.price_on_request) return false
           const price = p.price || p.rent_price || 0
           return price <= maxPriceNum
         })
@@ -304,7 +304,7 @@ function PropertiesContent() {
 
             <button
               onClick={clearFilters}
-              className="px-6 py-2 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 rounded-lg font-semibold text-white bg-gray-900 hover:bg-gray-800 shadow-sm transition-colors"
             >
               Limpar Filtros
             </button>
