@@ -144,23 +144,23 @@ function PropertiesContent() {
 
   return (
     <>
-      <div className="bg-rd-blue text-white py-16">
+      <div className="bg-rd-blue text-white py-12 sm:py-14 md:py-16">
         <div className="container mx-auto px-4">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold text-center"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-center"
           >
             Todos os Imóveis
           </motion.h1>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+      <div className="container mx-auto px-4 py-8 sm:py-10 md:py-12">
+        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
           {(filters.city || filters.neighborhood || filters.type || filters.status || (filters.rooms && filters.rooms !== '0')) && (
-            <div className="mb-4 flex items-center gap-2 flex-wrap">
-              <span className="text-sm text-gray-600">Buscando em:</span>
+            <div className="mb-3 sm:mb-4 flex items-center gap-2 flex-wrap">
+              <span className="text-xs sm:text-sm text-gray-600">Buscando em:</span>
               {filters.type && (
                 <>
                   <span className="bg-rd-blue text-white px-3 py-1 rounded-full text-sm font-medium">{filters.type}</span>
@@ -224,14 +224,14 @@ function PropertiesContent() {
               )}
             </div>
           )}
-          <div className="flex flex-col md:flex-row gap-4 items-end">
+          <div className="flex flex-col md:flex-row gap-3 sm:gap-4 items-end">
             {/* Cidade */}
-            <div className="flex-1">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">Cidade</label>
+            <div className="flex-1 w-full">
+              <label className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 block">Cidade</label>
               <select
                 value={filters.city}
                 onChange={(e) => handleFilterChange('city', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
               >
                 <option value="">Todas as cidades</option>
                 {cities.map(city => (
@@ -241,12 +241,12 @@ function PropertiesContent() {
             </div>
 
             {/* Bairro/Região */}
-            <div className="flex-1">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">Bairro / Região</label>
+            <div className="flex-1 w-full">
+              <label className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 block">Bairro / Região</label>
               <select
                 value={filters.neighborhood}
                 onChange={(e) => handleFilterChange('neighborhood', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
               >
                 <option value="">Todos os bairros</option>
                 {neighborhoods.map(neighborhood => (
@@ -256,12 +256,12 @@ function PropertiesContent() {
             </div>
 
             {/* Tipo de Imóvel */}
-            <div className="flex-1">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">Tipo de Imóvel</label>
+            <div className="flex-1 w-full">
+              <label className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 block">Tipo de Imóvel</label>
               <select
                 value={filters.type}
                 onChange={(e) => handleFilterChange('type', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
               >
                 <option value="">Todos</option>
                 <option value="apartamento">Apartamento</option>
@@ -273,12 +273,12 @@ function PropertiesContent() {
             </div>
 
             {/* Situação */}
-            <div className="flex-1">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">Situação</label>
+            <div className="flex-1 w-full">
+              <label className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 block">Situação</label>
               <select
                 value={filters.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
               >
                 <option value="">Todas</option>
                 <option value="na_planta">Na Planta</option>
@@ -287,12 +287,12 @@ function PropertiesContent() {
             </div>
 
             {/* Quartos */}
-            <div className="flex-1">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">Quartos</label>
+            <div className="flex-1 w-full">
+              <label className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 block">Quartos</label>
               <select
                 value={filters.rooms}
                 onChange={(e) => handleFilterChange('rooms', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
               >
                 <option value="0">Qualquer</option>
                 <option value="1">1 quarto</option>
@@ -304,33 +304,33 @@ function PropertiesContent() {
 
             <button
               onClick={clearFilters}
-              className="px-6 py-2 rounded-lg font-semibold text-white bg-gray-900 hover:bg-gray-800 shadow-sm transition-colors"
+              className="px-4 sm:px-6 py-2 rounded-lg font-semibold text-sm sm:text-base text-white bg-gray-900 hover:bg-gray-800 shadow-sm transition-colors w-full md:w-auto"
             >
               Limpar Filtros
             </button>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 items-end mt-4">
-            <div className="flex-1">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">Valor Mínimo</label>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-end mt-3 sm:mt-4">
+            <div className="flex-1 w-full">
+              <label className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 block">Valor Mínimo</label>
               <input
                 type="text"
                 inputMode="numeric"
                 placeholder="R$ 0,00"
                 value={filters.minPrice}
                 onChange={(e) => handleFilterChange('minPrice', maskCurrencyBRL(e.target.value))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
               />
             </div>
-            <div className="flex-1">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">Valor Máximo</label>
+            <div className="flex-1 w-full">
+              <label className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2 block">Valor Máximo</label>
               <input
                 type="text"
                 inputMode="numeric"
                 placeholder="R$ 0,00"
                 value={filters.maxPrice}
                 onChange={(e) => handleFilterChange('maxPrice', maskCurrencyBRL(e.target.value))}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+                className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
               />
             </div>
           </div>

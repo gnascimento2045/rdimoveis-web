@@ -128,13 +128,13 @@ export default function SearchBar() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="bg-white/95 backdrop-blur-md rounded-lg shadow-2xl p-8 max-w-6xl mx-auto"
+      className="bg-white/95 backdrop-blur-md rounded-lg shadow-2xl p-4 sm:p-6 md:p-8 max-w-6xl mx-auto"
     >
       {/* Opções: Comprar, Alugar, Lançamentos */}
-      <div className="flex gap-4 mb-12 justify-center">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10 md:mb-12 justify-center">
         <button
           onClick={() => setPurpose('comprar')}
-          className={`px-8 py-2 font-bold text-lg rounded-lg transition-all ${
+          className={`w-full sm:w-auto px-6 sm:px-8 py-2 font-bold text-base sm:text-lg rounded-lg transition-all ${
             purpose === 'comprar' 
               ? 'bg-rd-blue text-white hover:bg-rd-blue-hover' 
               : 'text-gray-700 bg-gray-200 hover:bg-gray-300'
@@ -144,7 +144,7 @@ export default function SearchBar() {
         </button>
         <button
           onClick={() => setPurpose('alugar')}
-          className={`px-8 py-2 font-bold text-lg rounded-lg transition-all ${
+          className={`w-full sm:w-auto px-6 sm:px-8 py-2 font-bold text-base sm:text-lg rounded-lg transition-all ${
             purpose === 'alugar' 
               ? 'bg-rd-blue text-white hover:bg-rd-blue-hover' 
               : 'text-gray-700 bg-gray-200 hover:bg-gray-300'
@@ -154,7 +154,7 @@ export default function SearchBar() {
         </button>
         <button
           onClick={() => setPurpose('lancamentos')}
-          className={`px-8 py-2 font-bold text-lg rounded-lg transition-all ${
+          className={`w-full sm:w-auto px-6 sm:px-8 py-2 font-bold text-base sm:text-lg rounded-lg transition-all ${
             purpose === 'lancamentos' 
               ? 'bg-rd-blue text-white hover:bg-rd-blue-hover' 
               : 'text-gray-700 bg-gray-200 hover:bg-gray-300'
