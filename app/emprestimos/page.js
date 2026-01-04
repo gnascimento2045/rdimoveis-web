@@ -11,10 +11,9 @@ import { motion } from 'framer-motion'
 export default function Emprestimos() {
   const operations = [
     {
-          className="inline-flex items-center gap-3 bg-white text-rd-blue hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold shadow-lg transition-colors"
+      title: 'Novo Empréstimo',
       description: 'Solicite um empréstimo consignado novo com as melhores taxas do mercado.'
-          <Image src="/assets/whatsapp.png" alt="WhatsApp" width={28} height={28} className="h-7 w-7" />
-          <span>Simular no WhatsApp</span>
+    },
     {
       title: 'Portabilidade',
       description: 'Transfira seu empréstimo consignado de outra instituição com facilidade.'
