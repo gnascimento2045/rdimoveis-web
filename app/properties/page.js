@@ -20,6 +20,7 @@ function PropertiesContent() {
     status: '',
     city: searchParams.get('city') || '',
     neighborhood: searchParams.get('neighborhood') || '',
+    rooms: searchParams.get('rooms') || '0',
     minPrice: searchParams.get('minPrice') || '',
     maxPrice: searchParams.get('maxPrice') || ''
   })
@@ -80,6 +81,14 @@ function PropertiesContent() {
         })
       }
 
+      if (filters.rooms && filters.rooms !== '0') {
+        const roomsNum = Number(filters.rooms)
+        data = data.filter(p => {
+          const bedrooms = Number(p.bedrooms || 0)
+          return roomsNum === 4 ? bedrooms >= 4 : bedrooms === roomsNum
+        })
+      }
+
       setProperties(data)
     } catch (error) {
       console.error('Error loading properties:', error)
@@ -93,7 +102,7 @@ function PropertiesContent() {
   }
 
   const clearFilters = () => {
-    setFilters({ type: '', status: '', city: '', neighborhood: '', minPrice: '', maxPrice: '' })
+    setFilters({ type: '', status: '', city: '', neighborhood: '', rooms: '0', minPrice: '', maxPrice: '' })
   }
 
   return (
@@ -112,9 +121,31 @@ function PropertiesContent() {
 
       <div className="container mx-auto px-4 py-12">
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-          {(filters.city || filters.neighborhood) && (
+          {(filters.city || filters.neighborhood || filters.type || filters.status || (filters.rooms && filters.rooms !== '0')) && (
             <div className="mb-4 flex items-center gap-2 flex-wrap">
               <span className="text-sm text-gray-600">Buscando em:</span>
+              {filters.type && (
+                <>
+                  <span className="bg-rd-blue text-white px-3 py-1 rounded-full text-sm font-medium">{filters.type}</span>
+                  <button 
+                    onClick={() => handleFilterChange('type', '')}
+                    className="text-gray-500 hover:text-gray-700 text-sm underline"
+                  >
+                    ✕
+                  </button>
+                </>
+              )}
+              {filters.status && (
+                <>
+                  <span className="bg-rd-blue text-white px-3 py-1 rounded-full text-sm font-medium">{filters.status}</span>
+                  <button 
+                    onClick={() => handleFilterChange('status', '')}
+                    className="text-gray-500 hover:text-gray-700 text-sm underline"
+                  >
+                    ✕
+                  </button>
+                </>
+              )}
               {filters.city && (
                 <>
                   <span className="bg-rd-blue text-white px-3 py-1 rounded-full text-sm font-medium">{filters.city}</span>
@@ -131,6 +162,23 @@ function PropertiesContent() {
                   <span className="bg-rd-blue text-white px-3 py-1 rounded-full text-sm font-medium">{filters.neighborhood}</span>
                   <button 
                     onClick={() => handleFilterChange('neighborhood', '')}
+                    className="text-gray-500 hover:text-gray-700 text-sm underline"
+                  >
+                    ✕
+                  </button>
+                </>
+              )}
+              {filters.rooms && filters.rooms !== '0' && (
+                <>
+                  <span className="bg-rd-blue text-white px-3 py-1 rounded-full text-sm font-medium">{
+                    filters.rooms === '4'
+                      ? '4+ quartos'
+                      : filters.rooms === '1'
+                        ? '1 quarto'
+                        : `${filters.rooms} quartos`
+                  }</span>
+                  <button 
+                    onClick={() => handleFilterChange('rooms', '0')}
                     className="text-gray-500 hover:text-gray-700 text-sm underline"
                   >
                     ✕
@@ -170,17 +218,20 @@ function PropertiesContent() {
               </select>
             </div>
 
-            {/* Tipo de Negociação */}
+            {/* Tipo de Imóvel */}
             <div className="flex-1">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">Tipo de Negociação</label>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">Tipo de Imóvel</label>
               <select
                 value={filters.type}
                 onChange={(e) => handleFilterChange('type', e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
               >
                 <option value="">Todos</option>
-                <option value="comprar">Comprar</option>
-                <option value="alugar">Alugar</option>
+                <option value="apartamento">Apartamento</option>
+                <option value="casa">Casa</option>
+                <option value="cobertura">Cobertura</option>
+                <option value="terreno">Terreno</option>
+                <option value="comercial">Comercial</option>
               </select>
             </div>
 
@@ -195,6 +246,22 @@ function PropertiesContent() {
                 <option value="">Todas</option>
                 <option value="na_planta">Na Planta</option>
                 <option value="usado">Pronto/Usado</option>
+              </select>
+            </div>
+
+            {/* Quartos */}
+            <div className="flex-1">
+              <label className="text-sm font-medium text-gray-700 mb-2 block">Quartos</label>
+              <select
+                value={filters.rooms}
+                onChange={(e) => handleFilterChange('rooms', e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
+              >
+                <option value="0">Qualquer</option>
+                <option value="1">1 quarto</option>
+                <option value="2">2 quartos</option>
+                <option value="3">3 quartos</option>
+                <option value="4">4+ quartos</option>
               </select>
             </div>
 

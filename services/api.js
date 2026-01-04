@@ -52,8 +52,8 @@ export const authService = {
 export const propertyService = {
   async getProperties(filters = {}) {
     const params = new URLSearchParams()
-    if (filters.type) params.append('type', filters.type)
-    if (filters.status) params.append('status', filters.status)
+    if (filters.type) params.append('tipo', filters.type)
+    if (filters.status) params.append('condicao', filters.status)
     if (filters.active !== undefined) params.append('active', filters.active)
     
     const response = await axios.get(`${API}/properties?${params.toString()}`)
