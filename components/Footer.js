@@ -64,6 +64,17 @@ export default function Footer() {
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-sm">
           <p>© 2024 RD IMÓVEIS DF. Todos os direitos reservados.</p>
+          <p className="mt-2">
+            Desenvolvido por{' '}
+            <a 
+              href="https://wa.me/5561992724480" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-rd-blue hover:text-blue-400 transition-colors font-medium"
+            >
+              GSN TECH
+            </a>
+          </p>
         </div>
       </div>
     </footer>
