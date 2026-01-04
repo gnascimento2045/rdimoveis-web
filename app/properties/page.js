@@ -316,7 +316,7 @@ function PropertiesContent() {
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="R$ 0,00"
+                placeholder="Mínimo"
                 value={filters.minPrice}
                 onChange={(e) => handleFilterChange('minPrice', maskCurrencyBRL(e.target.value))}
                 className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
@@ -327,7 +327,7 @@ function PropertiesContent() {
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="R$ 0,00"
+                placeholder="Máximo"
                 value={filters.maxPrice}
                 onChange={(e) => handleFilterChange('maxPrice', maskCurrencyBRL(e.target.value))}
                 className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rd-blue"
