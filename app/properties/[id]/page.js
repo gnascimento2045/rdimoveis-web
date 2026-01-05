@@ -417,17 +417,10 @@ export default function PropertyDetailPage() {
                   className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg py-4 text-lg font-bold shadow-lg flex items-center justify-center space-x-3 transition-colors"
                 >
                   <Image src="/assets/whatsapp.png" alt="WhatsApp" width={28} height={28} className="h-7 w-7" />
-                  <span>WhatsApp</span>
+                  <span>Agendar uma visita</span>
                 </a>
 
-                <a
-                  href={getWhatsAppLink(property)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full border-2 border-rd-blue text-rd-blue hover:bg-blue-50 rounded-lg py-4 text-lg font-bold flex items-center justify-center transition-colors"
-                >
-                  Agendar Visita
-                </a>
+                  {/* ...existing code... */}
               </div>
 
               {/* Separador */}
