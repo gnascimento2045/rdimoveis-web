@@ -158,17 +158,7 @@ export default function PropertyDetailPage() {
                 <Video className="w-5 h-5" />
                 VÍDEOS
               </button>
-              <button
-                onClick={() => setActiveTab('mapa')}
-                className={`px-6 py-3 font-bold transition-colors flex items-center gap-2 ${
-                  activeTab === 'mapa'
-                    ? 'text-rd-blue border-b-2 border-rd-blue -mb-[2px]'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <Map className="w-5 h-5" />
-                MAPA
-              </button>
+             
             </div>
 
             {/* Conteúdo - FOTOS */}
