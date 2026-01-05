@@ -158,17 +158,7 @@ export default function PropertyDetailPage() {
                 <Video className="w-5 h-5" />
                 VÍDEOS
               </button>
-              <button
-                onClick={() => setActiveTab('mapa')}
-                className={`px-6 py-3 font-bold transition-colors flex items-center gap-2 ${
-                  activeTab === 'mapa'
-                    ? 'text-rd-blue border-b-2 border-rd-blue -mb-[2px]'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <Map className="w-5 h-5" />
-                MAPA
-              </button>
+             
             </div>
 
             {/* Conteúdo - FOTOS */}
@@ -427,17 +417,10 @@ export default function PropertyDetailPage() {
                   className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white rounded-lg py-4 text-lg font-bold shadow-lg flex items-center justify-center space-x-3 transition-colors"
                 >
                   <Image src="/assets/whatsapp.png" alt="WhatsApp" width={28} height={28} className="h-7 w-7" />
-                  <span>WhatsApp</span>
+                  <span>Agendar uma visita</span>
                 </a>
 
-                <a
-                  href={getWhatsAppLink(property)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full border-2 border-rd-blue text-rd-blue hover:bg-blue-50 rounded-lg py-4 text-lg font-bold flex items-center justify-center transition-colors"
-                >
-                  Agendar Visita
-                </a>
+                  {/* ...existing code... */}
               </div>
 
               {/* Separador */}

@@ -13,11 +13,28 @@ import { motion } from 'framer-motion'
 
 function PropertiesContent() {
   const searchParams = useSearchParams()
+
+  const mapPurposeToFinalidade = (value = '') => {
+    const normalized = (value || '').toLowerCase()
+    if (['comprar', 'venda'].includes(normalized)) return 'venda'
+    if (['alugar', 'aluguel'].includes(normalized)) return 'aluguel'
+    if (['lancamentos', 'lancamento', 'lançamento'].includes(normalized)) return 'lancamento'
+    return ''
+  }
+
+  const getFinalidadeLabel = (value = '') => {
+    if (value === 'venda') return 'Comprar'
+    if (value === 'aluguel') return 'Alugar'
+    if (value === 'lancamento') return 'Lançamentos'
+    return ''
+  }
+
   const [properties, setProperties] = useState([])
   const [cities, setCities] = useState([])
   const [neighborhoods, setNeighborhoods] = useState([])
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
+    finalidade: mapPurposeToFinalidade(searchParams.get('purpose')),
     type: searchParams.get('type') || '',
     status: '',
     city: searchParams.get('city') || '',
@@ -85,6 +102,11 @@ function PropertiesContent() {
       if (filters.status && filters.status !== 'todas') filterParams.status = filters.status
       
       let data = await propertyService.getProperties(filterParams)
+
+      if (filters.finalidade) {
+        const desiredFinalidade = filters.finalidade
+        data = data.filter(p => mapPurposeToFinalidade(p.finalidade) === desiredFinalidade)
+      }
       
       if (filters.city) {
         const filterCity = normalize(filters.city)
@@ -139,7 +161,7 @@ function PropertiesContent() {
   }
 
   const clearFilters = () => {
-    setFilters({ type: '', status: '', city: '', neighborhood: '', rooms: '0', minPrice: '', maxPrice: '' })
+    setFilters({ finalidade: '', type: '', status: '', city: '', neighborhood: '', rooms: '0', minPrice: '', maxPrice: '' })
   }
 
   return (
@@ -158,9 +180,20 @@ function PropertiesContent() {
 
       <div className="container mx-auto px-4 py-8 sm:py-10 md:py-12">
         <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
-          {(filters.city || filters.neighborhood || filters.type || filters.status || (filters.rooms && filters.rooms !== '0')) && (
+          {(filters.finalidade || filters.city || filters.neighborhood || filters.type || filters.status || (filters.rooms && filters.rooms !== '0')) && (
             <div className="mb-3 sm:mb-4 flex items-center gap-2 flex-wrap">
               <span className="text-xs sm:text-sm text-gray-600">Buscando em:</span>
+              {filters.finalidade && (
+                <>
+                  <span className="bg-rd-blue text-white px-3 py-1 rounded-full text-sm font-medium">{getFinalidadeLabel(filters.finalidade)}</span>
+                  <button 
+                    onClick={() => handleFilterChange('finalidade', '')}
+                    className="text-gray-500 hover:text-gray-700 text-sm underline"
+                  >
+                    ✕
+                  </button>
+                </>
+              )}
               {filters.type && (
                 <>
                   <span className="bg-rd-blue text-white px-3 py-1 rounded-full text-sm font-medium">{filters.type}</span>
