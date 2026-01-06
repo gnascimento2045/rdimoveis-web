@@ -50,10 +50,23 @@ export default function SearchBar() {
         }
       })
 
-      const locations = [
-        ...Array.from(cityMap.values()).map(city => ({ name: city, type: 'city' })),
-        ...Array.from(neighborhoodMap.values()).map(neighborhood => ({ name: neighborhood, type: 'neighborhood' }))
-      ].sort((a, b) => a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' }))
+      // Deduplicate locations with same name (prefer city type)
+      const locationMap = new Map()
+      
+      // Add cities first
+      cityMap.forEach((city, key) => {
+        locationMap.set(key, { name: city, type: 'city' })
+      })
+      
+      // Add neighborhoods only if not already present
+      neighborhoodMap.forEach((neighborhood, key) => {
+        if (!locationMap.has(key)) {
+          locationMap.set(key, { name: neighborhood, type: 'neighborhood' })
+        }
+      })
+
+      const locations = Array.from(locationMap.values())
+        .sort((a, b) => a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' }))
 
       setAllLocations(locations)
       setSuggestions(locations.slice(0, 8))
