@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -9,6 +10,23 @@ import { CheckCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function Emprestimos() {
+  const [heroImage, setHeroImage] = useState('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?crop=entropy&cs=srgb&fm=jpg&q=85')
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/settings`)
+        const data = await res.json()
+        if (data['emprestimos-hero-image']?.url) {
+          setHeroImage(data['emprestimos-hero-image'].url)
+        }
+      } catch (err) {
+        console.error('Erro ao carregar imagem de fundo', err)
+      }
+    }
+    loadSettings()
+  }, [])
+
   const operations = [
     {
       title: 'Novo Empréstimo',
@@ -32,7 +50,7 @@ export default function Emprestimos() {
       {/* Hero Section */}
       <section className="relative pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 flex items-center justify-center bg-gradient-to-r from-slate-900 via-rd-blue to-blue-700">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?crop=entropy&cs=srgb&fm=jpg&q=85)', backgroundSize: 'cover' }}></div>
+          <div className="absolute inset-0" style={{ backgroundImage: `url(${heroImage})`, backgroundSize: 'cover' }}></div>
         </div>
         <div className="relative z-10 container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">

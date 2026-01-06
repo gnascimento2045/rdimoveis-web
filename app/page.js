@@ -17,6 +17,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [heroImageUrl, setHeroImageUrl] = useState('https://images.unsplash.com/photo-1625426242633-3be4b3379dfb?crop=entropy&cs=srgb&fm=jpg&q=85')
   const [valuationImageUrl, setValuationImageUrl] = useState('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?crop=entropy&cs=srgb&fm=jpg&q=85')
+  const [heroTitle, setHeroTitle] = useState('IDEALIZE!\nSONHE!\nREALIZE!')
+  const [heroSubtitle, setHeroSubtitle] = useState('Encontre o imóvel dos seus sonhos em Brasília')
+  const [valuationTitle, setValuationTitle] = useState('Saiba quanto vale seu imóvel')
 
   useEffect(() => {
     loadProperties()
@@ -30,8 +33,11 @@ export default function Home() {
       const data = await response.json()
       if (data['hero-image']?.url) setHeroImageUrl(data['hero-image'].url)
       if (data['valuation-image']?.url) setValuationImageUrl(data['valuation-image'].url)
+      if (data['hero-title']?.text) setHeroTitle(data['hero-title'].text)
+      if (data['hero-subtitle']?.text) setHeroSubtitle(data['hero-subtitle'].text)
+      if (data['valuation-title']?.text) setValuationTitle(data['valuation-title'].text)
     } catch (error) {
-      console.error('Error loading hero image:', error)
+      console.error('Error loading settings:', error)
     }
   }
 
@@ -86,10 +92,14 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative z-10 container mx-auto px-4 text-center">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-4 md:mb-6 drop-shadow-2xl leading-tight">
-            IDEALIZE!<br />SONHE!<br />REALIZE!
+            {heroTitle.split('\n').map((line, i) => (
+              <span key={i}>
+                {line}{i < heroTitle.split('\n').length - 1 && <br />}
+              </span>
+            ))}
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl text-white mb-6 sm:mb-8 md:mb-10 drop-shadow-lg px-4">
-            Encontre o imóvel dos seus sonhos em Brasília
+            {heroSubtitle}
           </p>
           <div className="max-w-4xl mx-auto px-2">
             <SearchBar />
@@ -169,7 +179,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 container mx-auto px-4 text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 sm:mb-8 drop-shadow-2xl px-4">
-            Saiba quanto vale seu imóvel
+            {valuationTitle}
           </h2>
           <a
             href="https://wa.me/5561993336757?text=Oi,%20quero%20simular%20o%20valor%20do%20meu%20imovel!"
