@@ -151,6 +151,11 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
       const finalData = {
         ...normalizeCharacteristics(formData),
         price: Number.isNaN(priceValue) ? null : priceValue,
+        // Converter strings vazias em null para campos numéricos
+        bedrooms: formData.bedrooms === '' || formData.bedrooms === null ? null : parseInt(formData.bedrooms),
+        bathrooms: formData.bathrooms === '' || formData.bathrooms === null ? null : parseInt(formData.bathrooms),
+        garages: formData.garages === '' || formData.garages === null ? null : parseInt(formData.garages),
+        area: formData.area === '' || formData.area === null ? null : parseFloat(formData.area),
       }
 
       if (property) {
