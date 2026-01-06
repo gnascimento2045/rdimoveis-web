@@ -54,7 +54,7 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
   const getCondicaoOptions = () => {
     switch (formData.finalidade) {
       case 'venda': return ['novo', 'usado']
-      case 'aluguel': return ['novo', 'usado']
+      case 'aluguel': return ['mobiliado', 'nao_mobiliado']
       case 'lancamento': return ['na_planta']
       default: return ['novo']
     }
@@ -346,6 +346,8 @@ export default function PropertyCreationWizard({ isOpen, onClose, onSave, proper
                   {option === 'novo' && 'Novo'}
                   {option === 'usado' && 'Usado'}
                   {option === 'na_planta' && 'Na planta'}
+                  {option === 'mobiliado' && 'Mobiliado'}
+                  {option === 'nao_mobiliado' && 'Não Mobiliado'}
                 </option>
               ))}
             </select>

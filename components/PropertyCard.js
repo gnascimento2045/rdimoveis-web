@@ -112,9 +112,11 @@ export default function PropertyCard({ property, index = 0 }) {
               <span className="bg-rd-blue text-white font-semibold px-2 py-1 rounded text-xs">
                 {getFinalidadeBadge(property.finalidade || property.type)}
               </span>
-              <span className="bg-white text-gray-800 font-semibold px-2 py-1 rounded text-xs">
-                {getCondicaoBadge(property.condicao || property.status)}
-              </span>
+              {getCondicaoBadge(property.condicao || property.status) && (
+                <span className="bg-white text-gray-800 font-semibold px-2 py-1 rounded text-xs">
+                  {getCondicaoBadge(property.condicao || property.status)}
+                </span>
+              )}
             </div>
           </div>
 

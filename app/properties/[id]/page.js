@@ -283,9 +283,11 @@ export default function PropertyDetailPage() {
               <span className="bg-rd-blue text-white font-semibold px-4 py-2 rounded-lg">
                 {getFinalidadeBadge(property.finalidade || property.type)}
               </span>
-              <span className="bg-white border-2 border-gray-300 text-gray-800 font-semibold px-4 py-2 rounded-lg">
-                {getCondicaoBadge(property.condicao || property.status)}
-              </span>
+              {getCondicaoBadge(property.condicao || property.status) && (
+                <span className="bg-white border-2 border-gray-300 text-gray-800 font-semibold px-4 py-2 rounded-lg">
+                  {getCondicaoBadge(property.condicao || property.status)}
+                </span>
+              )}
             </div>
 
             {/* Título e Localização */}
