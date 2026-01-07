@@ -67,12 +67,12 @@ export default function Footer() {
           <p className="mt-2">
             Desenvolvido por{' '}
             <a 
-              href="https://wa.me/5561992724480" 
+              href="https://gssystem.vercel.app" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-rd-blue hover:text-blue-400 transition-colors font-medium"
             >
-              GSN TECH
+              GS System
             </a>
           </p>
         </div>
