@@ -205,12 +205,13 @@ export default function Home() {
               <Slider
                 dots={true}
                 infinite={true}
-                speed={800}
+                speed={500}
                 slidesToShow={3}
                 slidesToScroll={1}
                 autoplay={true}
-                autoplaySpeed={3000}
+                autoplaySpeed={1500}
                 pauseOnHover={true}
+                arrows={true}
                 nextArrow={<NextArrow />}
                 prevArrow={<PrevArrow />}
                 responsive={[
@@ -226,12 +227,13 @@ export default function Home() {
                     settings: {
                       slidesToShow: 1,
                       slidesToScroll: 1,
+                      arrows: false
                     }
                   }
                 ]}
               >
                 {filteredProperties.map((property, index) => (
-                  <div key={property.id} className="px-4">
+                  <div key={property.id} className="px-2 sm:px-4">
                     <PropertyCard property={property} index={index} />
                   </div>
                 ))}
