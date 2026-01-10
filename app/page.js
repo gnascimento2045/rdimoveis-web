@@ -171,7 +171,7 @@ export default function Home() {
               </button>
               <button 
                 onClick={() => filterProperties('alugar')}
-                className={`w-full sm:w-auto w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 font-bold rounded-lg transition-all text-sm sm:text-base ${
+                className={`w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 font-bold rounded-lg transition-all text-sm sm:text-base ${
                   selectedType === 'alugar' 
                     ? 'bg-rd-blue text-white hover:bg-rd-blue-hover' 
                     : 'text-gray-700 bg-gray-200 hover:bg-gray-300'
@@ -201,7 +201,20 @@ export default function Home() {
               <p className="text-gray-600">Nenhum imóvel disponível para esta categoria.</p>
             </div>
           ) : (
-            <div className="mb-12 px-4 relative">
+            <div className="mb-12 relative w-full">
+              <style jsx global>{`
+                @media (max-width: 640px) {
+                  .slick-slide {
+                    width: 100% !important;
+                  }
+                  .slick-track {
+                    display: flex !important;
+                  }
+                  .slick-slide > div {
+                    width: 100%;
+                  }
+                }
+              `}</style>
               <Slider
                 dots={true}
                 infinite={true}
@@ -209,7 +222,7 @@ export default function Home() {
                 slidesToShow={3}
                 slidesToScroll={1}
                 autoplay={true}
-                autoplaySpeed={1500}
+                autoplaySpeed={2000}
                 pauseOnHover={true}
                 arrows={true}
                 nextArrow={<NextArrow />}
@@ -227,13 +240,16 @@ export default function Home() {
                     settings: {
                       slidesToShow: 1,
                       slidesToScroll: 1,
-                      arrows: false
+                      arrows: false,
+                      centerMode: false,
+                      variableWidth: false,
+                      adaptiveHeight: true
                     }
                   }
                 ]}
               >
                 {filteredProperties.map((property, index) => (
-                  <div key={property.id} className="px-2 sm:px-4">
+                  <div key={property.id} className="w-full px-3">
                     <PropertyCard property={property} index={index} />
                   </div>
                 ))}
